@@ -8,3 +8,5 @@ contactos.csv
 app/contactos.csv
 *.winmd
 desktop.ini
+*.zip
+
