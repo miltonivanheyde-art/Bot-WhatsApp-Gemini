@@ -41,11 +41,11 @@ El análisis del código fuente (`app/main.py`) revela la siguiente lógica func
 
 El análisis estático del código permite anticipar los siguientes registros en la consola durante la ejecución del bot a través de `iniciar_bot.bat`:
 
-1.  **Al iniciar:** Se mostrará la URL pública generada por `ngrok` para el webhook.
+1. **Al iniciar:** Se mostrará la URL pública generada por `ngrok` para el webhook.
     - `🔗 URL pública del webhook: https://<id_ngrok>.ngrok-free.app`
-2.  **Al verificar el webhook desde Meta:** Se registrará un mensaje de éxito.
+2. **Al verificar el webhook desde Meta:** Se registrará un mensaje de éxito.
     - `WEBHOOK VERIFICADO con éxito.`
-3.  **Al recibir un mensaje de un usuario:** Se registrará la recepción, el contenido y el envío de la respuesta de mantenimiento.
+3. **Al recibir un mensaje de un usuario:** Se registrará la recepción, el contenido y el envío de la respuesta de mantenimiento.
     - `--- NUEVO WEBHOOK RECIBIDO ---`
     - `Mensaje de <numero_remitente>: '<texto_recibido>'`
     - `-> Mensaje enviado con éxito. Payload: text, To: <numero_remitente>`
@@ -54,11 +54,11 @@ El análisis estático del código permite anticipar los siguientes registros en
 
 ## 5. Estado de Integración Gemini
 
-- **Estado:** No implementado.
+- **Estado:** Etapa 1 completada (Módulo Aislado).
 - **Evidencia:**
-    - El archivo `app/gemini_service.py`, requerido por la doctrina, no existe.
-    - No hay ninguna dependencia de la IA de Google (ej. `google-genai`) en el archivo `requirements.txt`.
-    - No existe código relacionado con la invocación de Gemini en la lógica del webhook.
+  - El archivo `app/gemini_service.py` ha sido creado como un esqueleto estructural, cumpliendo con la primera etapa del plan.
+  - No hay ninguna dependencia de la IA de Google (ej. `google-genai`) en el archivo `requirements.txt`.
+  - No existe código relacionado con la invocación de Gemini en la lógica del webhook.
 
 ---
 
@@ -71,20 +71,20 @@ El análisis estático del código permite anticipar los siguientes registros en
 
 ## 7. Riesgos Actuales
 
-1.  **Discrepancia Código-Documentación:** Existe una diferencia significativa entre el código implementado (modo mantenimiento) y el plan de desarrollo descrito en `doctrina.md`. Esto puede generar confusión sobre el estado real y los próximos pasos del proyecto.
-2.  **Incertidumbre del Baseline:** La `doctrina.md` menciona un baseline funcional (`whatsapp-baseline-funcional`), pero su existencia y validez no pueden ser verificadas, lo que compromete la estrategia de rollback.
+1. **Discrepancia Código-Documentación:** Existe una diferencia significativa entre el código implementado (modo mantenimiento) y el plan de desarrollo descrito en `doctrina.md`. Esto puede generar confusión sobre el estado real y los próximos pasos del proyecto.
+2. **Incertidumbre del Baseline:** La `doctrina.md` menciona un baseline funcional (`whatsapp-baseline-funcional`), pero su existencia y validez no pueden ser verificadas, lo que compromete la estrategia de rollback.
 
 ---
 
 ## 8. Roadmap Definido por Doctrina
 
-El documento `doctrina.md` establece un plan de acción obligatorio para la integración de Gemini, que se encuentra en la **Etapa 0 (Pendiente)**.
+El documento `doctrina.md` establece un plan de acción obligatorio para la integración de Gemini. La Etapa 1 ha sido completada y la Etapa 2 se encuentra pendiente de aprobación e implementación.
 
 - **Objetivo:** Implementar la IA de Gemini para generar respuestas dinámicas.
 - **Plan de Etapas:**
-    1.  **Etapa 1 (Módulo Aislado):** Crear `app/gemini_service.py` sin dependencias con el resto de la aplicación.
-    2.  **Etapa 2 (Prueba Aislada):** Crear un script para validar la conexión y funcionalidad de Gemini de forma independiente.
-    3.  **Etapa 3 (Validación Aislada):** Ejecutar la prueba y confirmar que el servicio de IA funciona.
-    4.  **Etapa 4 (Integración Mínima):** Conectar el servicio Gemini al webhook en `app/main.py`.
-    5.  **Etapa 5 (Fallback):** Asegurar que el bot responda de forma controlada si Gemini falla.
-    6.  **Etapa 6 (Prueba Real):** Validar el flujo completo de extremo a extremo.
+  1. **Etapa 1 (Módulo Aislado):** ✅ Completada.
+  2. **Etapa 2 (Prueba Aislada):** ⏳ Pendiente. Crear un script para validar la conexión y funcionalidad de Gemini de forma independiente.
+  3. **Etapa 3 (Validación Aislada):** Pendiente. Ejecutar la prueba y confirmar que el servicio de IA funciona.
+  4. **Etapa 4 (Integración Mínima):** Pendiente. Conectar el servicio Gemini al webhook en `app/main.py`.
+  5. **Etapa 5 (Fallback):** Pendiente. Asegurar que el bot responda de forma controlada si Gemini falla.
+  6. **Etapa 6 (Prueba Real):** Pendiente. Validar el flujo completo de extremo a extremo.

@@ -977,4 +977,4 @@ Nunca sacrificar un sistema funcional por una mejora no validada.
 
 ---
 
-# FIN DEL PROTOCOLO
+## FIN DEL PROTOCOLO
