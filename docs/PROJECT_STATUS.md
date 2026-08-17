@@ -152,3 +152,46 @@ La fase de integración inicial de Gemini se declara formalmente **concluida y e
 ### Nueva Directiva Operativa
 
 La prioridad del proyecto pasa de la integración básica a la **evolución de capacidades y la mejora continua**. Las capacidades de `Tool Calling` y `Grounding` fueron validadas funcionalmente y permanecen disponibles para futuras decisiones de integración. La investigación sobre `Agents` y la integración de conocimiento específico (como el de ANSES) son otras líneas de trabajo posibles.
+
+---
+
+## 10. Estado de la Capa de Conocimiento Verificable
+
+**Estado General:**
+
+- **Arquitectura:** ✅ APROBADA (Diseño V3.1 documentado en `docs/KNOWLEDGE_LAYER_DESIGN.md`).
+- **Implementación:** Autorizada por fases.
+- **Validación Funcional:** ⚠️ PENDIENTE.
+
+### Fase A: Especificación Arquitectónica
+
+- **Estado:** ✅ COMPLETADA.
+- **Evidencia:** Creación del documento `docs/KNOWLEDGE_LAYER_DESIGN.md`.
+
+### Fase B: Esquema y Acceso SQLite Aislado
+
+- **Estado:** ✅ IMPLEMENTADA Y VALIDADA DE FORMA AISLADA.
+- **Evidencia:**
+  - Creación de `app/database.py` con el esquema versionado de SQLite.
+  - Creación de `tests/test_database.py` para validación unitaria.
+  - Ejecución de 17 pruebas unitarias con resultado `OK`.
+  - `python -m py_compile` finalizó sin errores.
+  - `git diff --check` finalizó sin errores.
+- **Commits:**
+  - `a755d9d`: Implementación inicial de la Fase B mediante app/database.py y tests/test_database.py.
+  - `36d2e83`: Corrección de robustez y validación final de la Fase B.
+- **Estado del Repositorio (post-Fase B):**
+  - **Rama:** `feature/integracion-gemini`.
+  - Cambios sincronizados con el repositorio remoto.
+  - Árbol de trabajo limpio (`working tree clean`) después del `push`.
+
+### Aclaraciones Obligatorias sobre el Estado Actual
+
+Es crucial entender que únicamente la persistencia de datos de la Fase B ha sido validada de forma aislada. La capa completa **NO** es funcional.
+
+- **Integración con el Bot:** ❌ No existe integración con `app/main.py`.
+- **Integración con IA:** ❌ No existe integración con `app/gemini_service.py`.
+- **Recuperación Web:** ❌ No se ha implementado `app/web_retrieval_service.py`.
+- **Servicio de Conocimiento:** ❌ No se ha implementado `app/knowledge_service.py`.
+- **Validación Humana:** ❌ No existe la herramienta de validación humana.
+- **Base de Datos:** ⚠️ El archivo `data/tita.db` (si existe) es para desarrollo y no constituye una base de conocimiento poblada o productiva.
