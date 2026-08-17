@@ -1,13 +1,13 @@
 # DISEÑO DE CAPA DE CONOCIMIENTO VERIFICABLE
 
 **Versión:** 3.1
-**Estado:** PROPUESTA ARQUITECTÓNICA | IMPLEMENTACIÓN PENDIENTE | VALIDACIÓN PENDIENTE
+**Estado:** ARQUITECTURA APROBADA | FASE B IMPLEMENTADA Y VALIDADA DE FORMA AISLADA | INTEGRACIÓN FUNCIONAL PENDIENTE
 
 ## 1. Estado y Alcance
 
 Este documento define la arquitectura para una **Capa de Conocimiento Verificable**. Su objetivo es permitir que el bot Tita responda consultas institucionales utilizando una base de datos local, poblada con información recuperada de manera controlada desde fuentes oficiales y validada por humanos.
 
-Esta propuesta se encuentra en fase de diseño. **Ningún componente descrito aquí está implementado o validado.** La implementación futura deberá seguir un plan por fases, garantizando la compatibilidad total con la arquitectura existente del bot.
+Esta propuesta ha sido aprobada. Los componentes `app/database.py` y `tests/test_database.py` (Fase B) están implementados y validados aisladamente. Los demás componentes (`knowledge_service`, `web_retrieval_service`, etc.) y la integración funcional completa continúan pendientes.
 
 ## 2. Principios de Seguridad y Confianza
 
