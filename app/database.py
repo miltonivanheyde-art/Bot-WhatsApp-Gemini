@@ -185,6 +185,28 @@ class DatabaseManager:
         row = cursor.fetchone()
         return dict(row) if row else None
 
+    def search_validated_knowledge(self, query_text: str) -> Optional[Dict[str, Any]]:
+        """
+        Busca una entrada de conocimiento validada que coincida con el texto de la consulta.
+        Devuelve la primera coincidencia encontrada.
+        """
+        search_term = f"%{query_text.strip()}%"
+        query = """
+            SELECT
+                ke.title,
+                kv.extracted_text,
+                kv.final_url
+            FROM knowledge_entries ke
+            JOIN knowledge_versions kv ON ke.active_version_id = kv.id
+            WHERE
+                kv.current_status = 'VALIDATED' AND
+                (ke.title LIKE ? OR ke.keywords LIKE ? OR kv.extracted_text LIKE ?)
+            LIMIT 1;
+        """
+        cursor = self._execute_read_query(query, (search_term, search_term, search_term))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
     def update_knowledge_version_status(self, version_id: int, new_status: str, event_by: str, event_date: str, notes: Optional[str] = None):
         """
         Updates the status of a knowledge_version and logs the validation event in a single transaction.

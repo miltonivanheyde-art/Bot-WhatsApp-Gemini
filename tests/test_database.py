@@ -219,5 +219,48 @@ class TestDatabaseManager(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.db_manager.insert_knowledge_entry("Title", "keywords", "desc", 999) # Non-existent
 
+    def test_search_validated_knowledge(self):
+        """Prueba la búsqueda de conocimiento validado, ignorando otros estados."""
+        # 1. Crear datos de prueba con diferentes estados
+        source_id = self.db_manager.insert_source("https://anses.gob.ar/test-search", "anses.gob.ar", "official")
+
+        # Versión VALIDATED
+        validated_version_id = self.db_manager.insert_knowledge_version(
+            source_id=source_id, final_url="https://anses.gob.ar/validated", retrieval_date=datetime.now().isoformat(),
+            content_hash="hash_validated", original_content=b"validated content",
+            extracted_text="Contenido sobre jubilaciones y pensiones.", content_type="pagina", http_status_code=200, mime_type="text/html"
+        )
+        self.db_manager.update_knowledge_version_status(validated_version_id, "VALIDATED", "user", datetime.now().isoformat())
+        self.db_manager.insert_knowledge_entry("Jubilaciones", "jubilacion", "desc", validated_version_id)
+
+        # Versión PENDING (no debería tener una entrada de conocimiento asociada)
+        self.db_manager.insert_knowledge_version(
+            source_id=source_id, final_url="https://anses.gob.ar/pending", retrieval_date=datetime.now().isoformat(),
+            content_hash="hash_pending", original_content=b"pending content",
+            extracted_text="Información pendiente sobre asignaciones.", content_type="pagina", http_status_code=200, mime_type="text/html"
+        )
+
+        # Versión REJECTED
+        rejected_version_id = self.db_manager.insert_knowledge_version(
+            source_id=source_id, final_url="https://anses.gob.ar/rejected", retrieval_date=datetime.now().isoformat(),
+            content_hash="hash_rejected", original_content=b"rejected content",
+            extracted_text="Información incorrecta de créditos.", content_type="pagina", http_status_code=200, mime_type="text/html"
+        )
+        self.db_manager.update_knowledge_version_status(rejected_version_id, "REJECTED", "user", datetime.now().isoformat())
+
+        # 2. Ejecutar pruebas de búsqueda
+        # Coincidencia validada
+        result = self.db_manager.search_validated_knowledge("jubilaciones")
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertEqual(result["title"], "Jubilaciones")
+
+        # Ausencia de resultado
+        self.assertIsNone(self.db_manager.search_validated_knowledge("termino_inexistente"))
+
+        # Exclusión de otros estados
+        self.assertIsNone(self.db_manager.search_validated_knowledge("asignaciones"), "No debería encontrar contenido PENDING")
+        self.assertIsNone(self.db_manager.search_validated_knowledge("créditos"), "No debería encontrar contenido REJECTED")
+
 if __name__ == '__main__':
     unittest.main()
