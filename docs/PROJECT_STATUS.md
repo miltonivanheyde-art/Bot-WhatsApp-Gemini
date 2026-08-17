@@ -54,11 +54,21 @@ El análisis estático del código permite anticipar los siguientes registros en
 
 ## 5. Estado de Integración Gemini
 
-- **Estado:** Etapa 1 completada (Módulo Aislado).
-- **Evidencia:**
-  - El archivo `app/gemini_service.py` ha sido creado como un esqueleto estructural, cumpliendo con la primera etapa del plan.
-  - No hay ninguna dependencia de la IA de Google (ej. `google-genai`) en el archivo `requirements.txt`.
-  - No existe código relacionado con la invocación de Gemini en la lógica del webhook.
+Estado: Capacidades validadas en entorno de pruebas.
+
+Evidencia:
+
+- ✅ Interactions API validada.
+- ✅ Memoria Conversacional validada.
+- ✅ Tool Calling (Trigger) validado.
+- ✅ Tool Calling (Full Loop) validado.
+- ✅ Grounding / RAG validado.
+- ⚠️ Agents pendiente de validación funcional.
+
+Observación:
+
+Las capacidades de IA han sido validadas fuera del flujo productivo del bot.
+La integración con el webhook principal todavía no ha sido implementada.
 
 ---
 
@@ -88,3 +98,51 @@ El documento `doctrina.md` establece un plan de acción obligatorio para la inte
   4. **Etapa 4 (Integración Mínima):** Pendiente. Conectar el servicio Gemini al webhook en `app/main.py`.
   5. **Etapa 5 (Fallback):** Pendiente. Asegurar que el bot responda de forma controlada si Gemini falla.
   6. **Etapa 6 (Prueba Real):** Pendiente. Validar el flujo completo de extremo a extremo.
+
+  ### Nota de Estado
+
+Las etapas de validación tecnológica originalmente previstas fueron ejecutadas mediante la auditoría Gemini y se consideran materialmente completadas.
+
+Capacidades demostradas:
+
+- ✅ Interactions
+- ✅ Memoria Conversacional
+- ✅ Tool Calling
+- ✅ Grounding / RAG
+
+La siguiente fase ya no es validación tecnológica sino integración productiva.
+
+---
+
+## 9. Cierre de Fase de Auditoría y Dictamen Final
+
+La fase de descubrimiento tecnológico se declara formalmente **concluida**. La viabilidad técnica de la arquitectura objetivo ha sido demostrada mediante la ejecución de pruebas funcionales.
+
+### Capacidades Funcionalmente Validadas
+
+- **✅ Interactions API:** Conectividad y funcionamiento básico.
+- **✅ Memoria Conversacional:** Recuperación de contexto mediante `previous_interaction_id`.
+- **✅ Tool Calling (Full Loop):** Ciclo completo de detección, ejecución y síntesis.
+- **✅ Grounding / RAG:** Inyección dinámica de documentos para respuestas basadas en contexto.
+
+### Capacidades Pendientes
+
+- **⚠️ Agents:** La API `client.agents` existe, pero su creación funcional no ha sido validada (`invalid_request`). La investigación sobre `Agents` queda en suspenso.
+
+### Arquitectura y Modelo Oficiales
+
+- **Arquitectura Objetivo:** `client.interactions.create(...)`
+- **Modelo Oficial:** `models/gemini-flash-lite-latest`.
+
+### Dictamen Final del Proyecto
+
+El estado actual del proyecto es el siguiente:
+
+- **Código productivo:** ❌ Sin IA (responde "en mantenimiento").
+- **Arquitectura validada:** ✅ Lista para ser implementada.
+- **Conocimiento técnico:** ✅ Consolidado en `IA_CANON.md`.
+- **Siguiente paso:** ✅ Integrar las capacidades validadas de Gemini en el flujo real de WhatsApp.
+
+### Nueva Directiva Operativa
+
+La prioridad del proyecto pasa de la **investigación** a la **integración, consolidación e implementación**. El objetivo es conectar las capacidades ya validadas al bot para reemplazar la respuesta estática actual.

@@ -1,0 +1,1249 @@
+
+================================================================================
+GEMINI SDK INVENTORY
+================================================================================
+API Key:
+  ✅ Detectada
+
+================================================================================
+SDK
+================================================================================
+Versión google-genai: 2.18.1
+Cliente Gemini: ✅ Inicializado
+
+================================================================================
+MODELS API
+================================================================================
+  - compute_tokens
+  - count_tokens
+  - delete
+  - edit_image
+  - embed_content
+  - generate_content
+  - generate_content_stream
+  - generate_images
+  - generate_videos
+  - get
+  - list
+  - recontext_image
+  - segment_image
+  - update
+  - upscale_image
+  - vertexai
+
+================================================================================
+MODELOS DISPONIBLES
+================================================================================
+================================================================================
+NAME            : models/gemini-2.5-flash
+DISPLAY NAME    : Gemini 2.5 Flash
+VERSION         : 001
+
+DESCRIPTION:
+Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025.
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-pro
+DISPLAY NAME    : Gemini 2.5 Pro
+VERSION         : 2.5
+
+DESCRIPTION:
+Stable release (June 17th, 2025) of Gemini 2.5 Pro
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-flash-preview-tts
+DISPLAY NAME    : Gemini 2.5 Flash Preview TTS
+VERSION         : gemini-2.5-flash-exp-tts-2025-05-19
+
+DESCRIPTION:
+Gemini 2.5 Flash Preview TTS
+
+INPUT TOKENS    : 8192
+OUTPUT TOKENS   : 16384
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - countTokens
+  - generateContent
+
+================================================================================
+NAME            : models/gemini-2.5-pro-preview-tts
+DISPLAY NAME    : Gemini 2.5 Pro Preview TTS
+VERSION         : gemini-2.5-pro-preview-tts-2025-05-19
+
+DESCRIPTION:
+Gemini 2.5 Pro Preview TTS
+
+INPUT TOKENS    : 8192
+OUTPUT TOKENS   : 16384
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - countTokens
+  - generateContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemma-4-26b-a4b-it
+DISPLAY NAME    : Gemma 4 26B A4B IT
+VERSION         : 001
+
+DESCRIPTION:
+Gemma 4 26B A4B IT
+
+INPUT TOKENS    : 262144
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/gemma-4-31b-it
+DISPLAY NAME    : Gemma 4 31B IT
+VERSION         : 001
+
+DESCRIPTION:
+Gemma 4 31B IT
+
+INPUT TOKENS    : 262144
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/gemini-flash-latest
+DISPLAY NAME    : Gemini Flash Latest
+VERSION         : Gemini Flash Latest
+
+DESCRIPTION:
+Latest release of Gemini Flash
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-flash-lite-latest
+DISPLAY NAME    : Gemini Flash-Lite Latest
+VERSION         : Gemini Flash-Lite Latest
+
+DESCRIPTION:
+Latest release of Gemini Flash-Lite
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-pro-latest
+DISPLAY NAME    : Gemini Pro Latest
+VERSION         : Gemini Pro Latest
+
+DESCRIPTION:
+Latest release of Gemini Pro
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-flash-lite
+DISPLAY NAME    : Gemini 2.5 Flash-Lite
+VERSION         : 001
+
+DESCRIPTION:
+Stable version of Gemini 2.5 Flash-Lite, released in July of 2025
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-flash-image
+DISPLAY NAME    : Nano Banana
+VERSION         : 2.0
+
+DESCRIPTION:
+Gemini 2.5 Flash Preview Image
+
+INPUT TOKENS    : 32768
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3-flash-preview
+DISPLAY NAME    : Gemini 3 Flash Preview
+VERSION         : 3-flash-preview-12-2025
+
+DESCRIPTION:
+Gemini 3 Flash Preview
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-pro-preview
+DISPLAY NAME    : Gemini 3.1 Pro Preview
+VERSION         : 3.1-pro-preview-01-2026
+
+DESCRIPTION:
+Gemini 3.1 Pro Preview
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-pro-preview-customtools
+DISPLAY NAME    : Gemini 3.1 Pro Preview Custom Tools
+VERSION         : 3.1-pro-preview-01-2026
+
+DESCRIPTION:
+Gemini 3.1 Pro Preview optimized for custom tool usage
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-lite-preview
+DISPLAY NAME    : Gemini 3.1 Flash Lite Preview
+VERSION         : 3.1-flash-lite-preview-03-2026
+
+DESCRIPTION:
+Gemini 3.1 Flash Lite Preview
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-lite
+DISPLAY NAME    : Gemini 3.1 Flash Lite
+VERSION         : 3.1-flash-lite-05-2026
+
+DESCRIPTION:
+Gemini 3.1 Flash Lite
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3-pro-image-preview
+DISPLAY NAME    : Nano Banana Pro
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3 Pro Image Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3-pro-image
+DISPLAY NAME    : Nano Banana Pro
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3 Pro Image
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/nano-banana-pro-preview
+DISPLAY NAME    : Nano Banana Pro
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3 Pro Image Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-image-preview
+DISPLAY NAME    : Nano Banana 2
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3.1 Flash Image Preview.
+
+INPUT TOKENS    : 65536
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-image
+DISPLAY NAME    : Nano Banana 2
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3.1 Flash Image.
+
+INPUT TOKENS    : 65536
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-lite-image
+DISPLAY NAME    : Nano Banana 2 Lite
+VERSION         : 3.0
+
+DESCRIPTION:
+Gemini 3.1 Flash Lite Image.
+
+INPUT TOKENS    : 65536
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 1.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.5-flash
+DISPLAY NAME    : Gemini 3.5 Flash
+VERSION         : 3.5-flash-05-2026
+
+DESCRIPTION:
+Gemini 3.5 Flash
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.5-flash-lite
+DISPLAY NAME    : Gemini 3.5 Flash Lite
+VERSION         : 3.5-flash-lite-07-2026
+
+DESCRIPTION:
+Gemini 3.5 Flash Lite
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-omni-flash-preview
+DISPLAY NAME    : Gemini Omni Flash Preview
+VERSION         : 001
+
+DESCRIPTION:
+Gemini Omni Flash Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/gemini-3.6-flash
+DISPLAY NAME    : Gemini 3.6 Flash
+VERSION         : 3.6-flash-07-2026
+
+DESCRIPTION:
+Gemini 3.6 Flash
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.7-flash
+DISPLAY NAME    : Gemini 3.7 Flash
+VERSION         : 3.7-flash-08-2026
+
+DESCRIPTION:
+Gemini 3.7 Flash
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/lyria-3-clip-preview
+DISPLAY NAME    : Lyria 3 Clip Preview
+VERSION         : lyria-3-clip-preview
+
+DESCRIPTION:
+Lyria 3 30s model Preview
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/lyria-3-pro-preview
+DISPLAY NAME    : Lyria 3 Pro Preview
+VERSION         : lyria-3-pro-preview
+
+DESCRIPTION:
+Lyria 3 Pro Preview
+
+INPUT TOKENS    : 1048576
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/gemini-3.1-flash-tts-preview
+DISPLAY NAME    : Gemini 3.1 Flash TTS Preview
+VERSION         : 3.1-flash-tts-preview
+
+DESCRIPTION:
+Gemini 3.1 Flash TTS Preview
+
+INPUT TOKENS    : 8192
+OUTPUT TOKENS   : 16384
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-robotics-er-1.6-preview
+DISPLAY NAME    : Gemini Robotics-ER 1.6 Preview
+VERSION         : 1.6-preview
+
+DESCRIPTION:
+Gemini Robotics-ER 1.6 Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-robotics-er-2-preview
+DISPLAY NAME    : Gemini Robotics-ER 2 Preview
+VERSION         : 2-preview
+
+DESCRIPTION:
+Gemini Robotics-ER 2 Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+  - createCachedContent
+  - batchGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-computer-use-preview-10-2025
+DISPLAY NAME    : Gemini 2.5 Computer Use Preview 10-2025
+VERSION         : Gemini 2.5 Computer Use Preview 10-2025
+
+DESCRIPTION:
+Gemini 2.5 Computer Use Preview 10-2025
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/antigravity-preview-05-2026
+DISPLAY NAME    : Antigravity Agent Preview
+VERSION         : 0.1
+
+DESCRIPTION:
+Preview release of Antigravity Agent (05-2026)
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/deep-research-max-preview-04-2026
+DISPLAY NAME    : Deep Research Max Preview (Apr-21-2026)
+VERSION         : deepthink-exp-05-20
+
+DESCRIPTION:
+Preview release (April 21st, 2026) of Deep Research Max
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/deep-research-preview-04-2026
+DISPLAY NAME    : Deep Research Preview (Apr-21-2026)
+VERSION         : deepthink-exp-05-20
+
+DESCRIPTION:
+Preview release (April 21th, 2026) of Deep Research
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/deep-research-pro-preview-12-2025
+DISPLAY NAME    : Deep Research Pro Preview (Dec-12-2025)
+VERSION         : deepthink-exp-05-20
+
+DESCRIPTION:
+Preview release (December 12th, 2025) of Deep Research Pro
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - generateContent
+  - countTokens
+
+================================================================================
+NAME            : models/gemini-embedding-001
+DISPLAY NAME    : Gemini Embedding 001
+VERSION         : 001
+
+DESCRIPTION:
+Obtain a distributed representation of a text.
+
+INPUT TOKENS    : 2048
+OUTPUT TOKENS   : 1
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - embedContent
+  - countTextTokens
+  - countTokens
+  - asyncBatchEmbedContent
+
+================================================================================
+NAME            : models/gemini-embedding-2-preview
+DISPLAY NAME    : Gemini Embedding 2 Preview
+VERSION         : 2
+
+DESCRIPTION:
+Obtain a distributed representation of multimodal content.
+
+INPUT TOKENS    : 8192
+OUTPUT TOKENS   : 1
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - embedContent
+  - countTextTokens
+  - countTokens
+  - asyncBatchEmbedContent
+
+================================================================================
+NAME            : models/gemini-embedding-2
+DISPLAY NAME    : Gemini Embedding 2
+VERSION         : 2
+
+DESCRIPTION:
+Obtain a distributed representation of multimodal content.
+
+INPUT TOKENS    : 8192
+OUTPUT TOKENS   : 1
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - embedContent
+  - countTextTokens
+  - countTokens
+  - asyncBatchEmbedContent
+
+================================================================================
+NAME            : models/aqa
+DISPLAY NAME    : Model that performs Attributed Question Answering.
+VERSION         : 001
+
+DESCRIPTION:
+Model trained to return answers to questions that are grounded in provided sources, along with estimating answerable probability.
+
+INPUT TOKENS    : 7168
+OUTPUT TOKENS   : 1024
+
+TEMPERATURE     : 0.2
+MAX TEMP        : None
+TOP_P           : 1.0
+TOP_K           : 40
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - generateAnswer
+
+================================================================================
+NAME            : models/imagen-4.0-generate-001
+DISPLAY NAME    : Imagen 4
+VERSION         : 001
+
+DESCRIPTION:
+Vertex served Imagen 4.0 model
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predict
+
+================================================================================
+NAME            : models/imagen-4.0-ultra-generate-001
+DISPLAY NAME    : Imagen 4 Ultra
+VERSION         : 001
+
+DESCRIPTION:
+Vertex served Imagen 4.0 ultra model
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predict
+
+================================================================================
+NAME            : models/imagen-4.0-fast-generate-001
+DISPLAY NAME    : Imagen 4 Fast
+VERSION         : 001
+
+DESCRIPTION:
+Vertex served Imagen 4.0 Fast model
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predict
+
+================================================================================
+NAME            : models/veo-3.1-generate-preview
+DISPLAY NAME    : Veo 3.1
+VERSION         : 3.1
+
+DESCRIPTION:
+Veo 3.1
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predictLongRunning
+
+================================================================================
+NAME            : models/veo-3.1-fast-generate-preview
+DISPLAY NAME    : Veo 3.1 fast
+VERSION         : 3.1
+
+DESCRIPTION:
+Veo 3.1 fast
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predictLongRunning
+
+================================================================================
+NAME            : models/veo-3.1-lite-generate-preview
+DISPLAY NAME    : Veo 3.1 lite
+VERSION         : 3.1
+
+DESCRIPTION:
+Veo 3.1 lite
+
+INPUT TOKENS    : 480
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : None
+MAX TEMP        : None
+TOP_P           : None
+TOP_K           : None
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - predictLongRunning
+
+================================================================================
+NAME            : models/gemini-2.5-flash-native-audio-latest
+DISPLAY NAME    : Gemini 2.5 Flash Native Audio Latest
+VERSION         : Gemini 2.5 Flash Native Audio Latest
+
+DESCRIPTION:
+Latest release of Gemini 2.5 Flash Native Audio
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - countTokens
+  - bidiGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-flash-native-audio-preview-09-2025
+DISPLAY NAME    : Gemini 2.5 Flash Native Audio Preview 09-2025
+VERSION         : gemini-2.5-flash-preview-native-audio-dialog-2025-05-19
+
+DESCRIPTION:
+Gemini 2.5 Flash Native Audio Preview 09-2025
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - countTokens
+  - bidiGenerateContent
+
+================================================================================
+NAME            : models/gemini-2.5-flash-native-audio-preview-12-2025
+DISPLAY NAME    : Gemini 2.5 Flash Native Audio Preview 12-2025
+VERSION         : 12-2025
+
+DESCRIPTION:
+Gemini 2.5 Flash Native Audio Preview 12-2025
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 8192
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : True
+
+SUPPORTED ACTIONS:
+  - countTokens
+  - bidiGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.1-flash-live-preview
+DISPLAY NAME    : Gemini 3.1 Flash Live Preview
+VERSION         : 3.1-flash-live-03-2026
+
+DESCRIPTION:
+Gemini 3.1 Flash Live Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - bidiGenerateContent
+
+================================================================================
+NAME            : models/gemini-robotics-er-2-streaming-preview
+DISPLAY NAME    : Gemini Robotics-ER 2 Streaming Preview
+VERSION         : 2-streaming-preview
+
+DESCRIPTION:
+Gemini Robotics-ER 2 Streaming Preview
+
+INPUT TOKENS    : 131072
+OUTPUT TOKENS   : 65536
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - bidiGenerateContent
+
+================================================================================
+NAME            : models/gemini-3.5-live-translate-preview
+DISPLAY NAME    : Gemini 3.5 Live Translate Preview
+VERSION         : 3.5-live-translate-06-2026
+
+DESCRIPTION:
+Gemini 3.5 Live Translate Preview
+
+INPUT TOKENS    : 16384
+OUTPUT TOKENS   : 32768
+
+TEMPERATURE     : 1.0
+MAX TEMP        : 2.0
+TOP_P           : 0.95
+TOP_K           : 64
+
+THINKING        : None
+
+SUPPORTED ACTIONS:
+  - bidiGenerateContent
+
+================================================================================
+TOTAL MODELOS: 53
+
+================================================================================
+NOTAS
+================================================================================
+Este informe refleja únicamente los modelos accesibles para la API Key actual.
+Los modelos visibles deben considerarse la fuente de verdad para futuras integraciones.
