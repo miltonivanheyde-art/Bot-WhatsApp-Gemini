@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 # Cargar variables de entorno desde el archivo bot.env
 
 from app.gemini_service import generar_respuesta_gemini
+from app.knowledge_service import KnowledgeService, KnowledgeStatus, ValidatedKnowledge
 
 load_dotenv(dotenv_path="bot.env")
 
@@ -18,6 +19,9 @@ PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 DEBUG_WEBHOOK = False
 
 app = FastAPI()
+
+# Crear una única instancia del servicio de conocimiento
+knowledge_service = KnowledgeService(db_path="data/tita.db")
 
 # Almacenamiento en memoria para el estado de la conversación.
 CONVERSATION_STATE = {}
@@ -105,6 +109,27 @@ def _process_text_message(message_info: dict):
     print(f"👤 {numero_remitente}")
     print(f"💬 {texto_recibido}")
     print("═══════════════════════════════════════\n")
+
+    # --- FASE F: INTEGRACIÓN MÍNIMA DE KNOWLEDGE SERVICE ---
+    try:
+        # 1. Consultar el KnowledgeService primero, sin recuperación web automática.
+        knowledge_response = knowledge_service.handle_query(query_text=texto_recibido)
+
+        # 2. Si se encuentra conocimiento VALIDADO, responder y terminar.
+        if knowledge_response.status == KnowledgeStatus.VALIDATED_KNOWLEDGE:
+            validated_data = knowledge_response.data
+            if isinstance(validated_data, ValidatedKnowledge):
+                respuesta_final = f"{validated_data.content}\n\nFuente: {validated_data.source_url}"
+                enviar_mensaje_whatsapp(respuesta_final, numero_remitente)
+                print("✅ Respuesta enviada desde la Base de Conocimiento Local.")
+                return  # Finaliza el procesamiento de este mensaje.
+
+        # 3. Para cualquier otro estado (NOT_FOUND, PENDING, etc.), continuar a Gemini.
+
+    except Exception as e:
+        # 4. Si el KnowledgeService falla, registrar el error y continuar al fallback (Gemini).
+        print(f"⚠️ ADVERTENCIA: KnowledgeService falló: {e}. Continuando con Gemini.")
+    # --- FIN DE LA INTEGRACIÓN ---
 
     previous_interaction_id = CONVERSATION_STATE.get(numero_remitente)
 
