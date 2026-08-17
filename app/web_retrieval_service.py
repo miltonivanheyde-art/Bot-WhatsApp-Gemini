@@ -128,6 +128,9 @@ def retrieve_source_content(requested_url: str) -> RetrievedContent:
         # 1. Validar la URL actual ANTES de cada solicitud
         _validate_url_security(current_url)
         parsed_url = urlparse(current_url)
+        if not parsed_url.hostname:
+            # Esta comprobación es redundante debido a _validate_url_security, pero satisface al analizador estático.
+            raise InvalidURLError("Hostname no encontrado en la URL validada.")
         _validate_domain_and_ip(parsed_url.hostname)
 
         try:
@@ -180,6 +183,10 @@ def retrieve_source_content(requested_url: str) -> RetrievedContent:
 
                 # 6. Construir el resultado y salir del bucle
                 final_parsed_url = urlparse(current_url)
+                hostname = final_parsed_url.hostname
+                if not hostname:
+                    # Teóricamente inalcanzable debido a las validaciones previas.
+                    raise InvalidURLError("Hostname final no encontrado, estado inconsistente.")
                 return RetrievedContent(
                     requested_url=requested_url,
                     final_url=current_url,
@@ -187,7 +194,7 @@ def retrieve_source_content(requested_url: str) -> RetrievedContent:
                     content_hash=hashlib.sha256(content_buffer).hexdigest(),
                     original_content=bytes(content_buffer),
                     mime_type=content_type,
-                    source_domain=final_parsed_url.hostname,
+                    source_domain=hostname,
                     source_type='official',
                     retrieval_date=datetime.now(timezone.utc).isoformat(),
                 )
