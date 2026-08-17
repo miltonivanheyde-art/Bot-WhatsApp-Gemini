@@ -13,7 +13,8 @@ def start_server():
         host="0.0.0.0",
         port=PORT,
         reload=True,
-        reload_dirs=["app"]  # Vigila solo la carpeta 'app' para evitar reinicios innecesarios
+        reload_dirs=["app"],  # Vigila solo la carpeta 'app' para evitar reinicios innecesarios
+        access_log=False      # Desactiva los logs de acceso HTTP (ej. "POST /webhook... 200 OK")
     )
 
 if __name__ == "__main__":

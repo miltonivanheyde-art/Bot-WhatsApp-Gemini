@@ -4,3 +4,5 @@ python-dotenv
 requests
 ngrok
 google-genai
+beautifulsoup4
+lxml

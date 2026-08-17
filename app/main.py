@@ -1,9 +1,13 @@
 import os
 import json
 from fastapi import FastAPI, Request, Response, status
+import sys
 import requests
 from dotenv import load_dotenv
 # Cargar variables de entorno desde el archivo bot.env
+
+from app.gemini_service import generar_respuesta_gemini
+
 load_dotenv(dotenv_path="bot.env")
 
 # Variables desde .env
@@ -11,7 +15,37 @@ VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 
+DEBUG_WEBHOOK = False
+
 app = FastAPI()
+
+# Almacenamiento en memoria para el estado de la conversación.
+CONVERSATION_STATE = {}
+STATE_FILE_PATH = "state.json"
+
+def _load_state():
+    """Carga el estado de las conversaciones desde un archivo JSON al iniciar."""
+    global CONVERSATION_STATE
+    try:
+        if os.path.exists(STATE_FILE_PATH):
+            with open(STATE_FILE_PATH, "r", encoding="utf-8") as f:
+                CONVERSATION_STATE = json.load(f)
+            print(f"✅ Estado cargado desde '{STATE_FILE_PATH}'.")
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"⚠️ No se pudo cargar el estado desde '{STATE_FILE_PATH}'. Empezando con estado vacío. Error: {e}")
+        CONVERSATION_STATE = {}
+
+def _save_state():
+    """Guarda el estado actual de las conversaciones en un archivo JSON."""
+    try:
+        with open(STATE_FILE_PATH, "w", encoding="utf-8") as f:
+            json.dump(CONVERSATION_STATE, f, indent=4)
+    except IOError as e:
+        print(f"❌ ERROR CRÍTICO: No se pudo guardar el estado en '{STATE_FILE_PATH}'. Error: {e}", file=sys.stderr)
+
+@app.on_event("startup")
+def on_startup():
+    _load_state()
 
 def _enviar_mensaje(payload: dict):
     """Función base para enviar un payload a la API de WhatsApp."""
@@ -29,7 +63,7 @@ def _enviar_mensaje(payload: dict):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()
-        print(f"-> Mensaje enviado con éxito. Payload: {payload.get('type', 'text')}, To: {payload.get('to')}")
+        print(f"📤 RESPUESTA ENVIADA\n👤 {payload.get('to')}\n✅ OK\n")
     except requests.exceptions.RequestException as e:
         print(f"Error al enviar mensaje: {e}")
         if e.response is not None:
@@ -58,6 +92,36 @@ def enviar_mensaje_template(nombre_template: str, codigo_lenguaje: str, numero: 
     }
     _enviar_mensaje(payload)
 
+def _process_text_message(message_info: dict):
+    """Procesa un evento de mensaje de tipo 'text'."""
+    numero_remitente = message_info.get("from")
+    texto_recibido = message_info.get("text", {}).get("body")
+
+    if not numero_remitente or not texto_recibido:
+        return
+
+    print("═══════════════════════════════════════")
+    print("📩 MENSAJE RECIBIDO")
+    print(f"👤 {numero_remitente}")
+    print(f"💬 {texto_recibido}")
+    print("═══════════════════════════════════════\n")
+
+    previous_interaction_id = CONVERSATION_STATE.get(numero_remitente)
+
+    texto_respuesta, new_interaction_id = generar_respuesta_gemini(
+        prompt=texto_recibido,
+        previous_interaction_id=previous_interaction_id
+    )
+
+    if new_interaction_id:
+        CONVERSATION_STATE[numero_remitente] = new_interaction_id
+        _save_state()
+    elif numero_remitente in CONVERSATION_STATE:
+        del CONVERSATION_STATE[numero_remitente]
+        _save_state()
+
+    enviar_mensaje_whatsapp(texto_respuesta, numero_remitente)
+
 @app.get("/")
 def inicio():
     return {"estado": "Servidor del bot funcionando correctamente."}
@@ -78,34 +142,47 @@ async def verificar_webhook(request: Request):
 
 @app.post("/webhook_whatsapp")
 async def recibir_mensajes(request: Request):
-    """Procesa los mensajes entrantes de WhatsApp."""
+    """Procesa los eventos entrantes de WhatsApp."""
     body_bytes = await request.body()
-    body_str = body_bytes.decode('utf-8')
-    print("\n--- NUEVO WEBHOOK RECIBIDO ---")
-    print(f"Cuerpo: {body_str}")
+    if DEBUG_WEBHOOK:
+        body_str = body_bytes.decode('utf-8')
+        print("\n--- DEBUG: PAYLOAD COMPLETO ---")
+        print(body_str)
+        print("---------------------------------\n")
 
     try:
-        body = json.loads(body_str)
-        message_info = body['entry'][0]['changes'][0]['value']['messages'][0]
+        body = json.loads(body_bytes)
+
+        if "entry" not in body or not body["entry"]:
+            print("📡 EVENTO WHATSAPP\nTipo: Payload inválido (sin 'entry').\n")
+            return Response(status_code=status.HTTP_200_OK)
+
+        value = body["entry"][0]["changes"][0].get("value", {})
+
+        # --- EVENT ROUTER ---
+        if "messages" in value:
+            for message in value["messages"]:
+                message_type = message.get("type", "unknown")
+                if message_type == "text":
+                    _process_text_message(message)
+                else:
+                    print(f"📡 EVENTO WHATSAPP\nTipo: {message_type}\n")
         
-        if message_info.get("type") == "text":
-            numero_remitente = message_info.get("from")
-            texto_recibido = message_info.get("text", {}).get("body")
+        elif "statuses" in value:
+            STATUS_LOG_FORMAT = {
+                "SENT": "Enviado ✔️",
+                "DELIVERED": "Entregado ✔️✔️",
+                "READ": "Leído 👀"
+            }
+            for status_update in value["statuses"]:
+                status_type = status_update.get("status", "unknown").upper()
+                log_message = STATUS_LOG_FORMAT.get(status_type, f"Estado: {status_type}")
+                print(f"📬 {log_message}\n")
+        
+        else:
+            print(f"📡 EVENTO WHATSAPP\nTipo: Desconocido (claves: {list(value.keys())})\n")
 
-            if not numero_remitente or not texto_recibido:
-                print("Webhook ignorado (sin remitente o texto).")
-                return Response(status_code=status.HTTP_200_OK)
-
-            print(f"Mensaje de {numero_remitente}: '{texto_recibido}'")
-            
-            # --- LÓGICA DE RESPUESTA ---
-            # Aquí es donde estaba la llamada a la IA.
-            # Por ahora, enviamos una respuesta fija.
-            texto_respuesta = "Mensaje recibido. El bot está en mantenimiento. 🤖"
-            enviar_mensaje_whatsapp(texto_respuesta, numero_remitente)
-
-    except (KeyError, IndexError, json.JSONDecodeError) as e:
-        print(f"Webhook ignorado (formato no esperado o no es un mensaje de usuario). Error: {e}")
+    except (json.JSONDecodeError, KeyError, IndexError) as e:
+        print(f"❌ ERROR DE PARSEO: No se pudo procesar el webhook. {type(e).__name__}: {e}\n", file=sys.stderr)
 
     return Response(status_code=status.HTTP_200_OK)
-

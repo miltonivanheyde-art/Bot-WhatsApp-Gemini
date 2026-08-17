@@ -2,11 +2,34 @@
 .vscode/
 __pycache__/
 *.pyc
+
 bot.env
 .env
+
 contactos.csv
 app/contactos.csv
+
 *.winmd
 desktop.ini
 *.zip
 
+state.json
+
+# --------------------------------------------------
+# Investigación local ANSES
+# --------------------------------------------------
+
+anses_deep_crawler.py
+creador_conocimiento.py
+base_conocimiento_anses/
+
+# Datos temporales de extracción
+crawler_output/
+knowledge_output/
+
+# --------------------------------------------------
+# Auditorías y experimentos locales
+# --------------------------------------------------
+
+docs/ANSES_SOURCE_AUDIT.md
+tools/anses_source_audit.py
