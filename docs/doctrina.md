@@ -247,6 +247,38 @@ como evidencia real.
 
 ---
 
+### 7.1 CAPACIDAD REAL DE EJECUCIÓN
+
+Antes de informar resultados de comandos, el asistente debe determinar si dispone de acceso real y verificable a una terminal o herramienta de ejecución dentro del workspace.
+
+Si no dispone de acceso verificable:
+
+- no debe afirmar que ejecutó comandos;
+- no debe fabricar, simular ni anticipar salidas de consola;
+- no debe presentar resultados esperados como resultados reales;
+- no debe afirmar que las pruebas pasaron;
+- no debe afirmar que el código compila;
+- no debe afirmar estados de Git como comprobados;
+- no debe declarar una implementación como validada.
+
+En ese caso debe indicar expresamente:
+
+> Validación pendiente. Estos comandos no fueron ejecutados por el asistente y deben ser ejecutados por el usuario.
+
+El asistente puede:
+
+- realizar análisis estático;
+- modificar archivos autorizados;
+- proponer comandos de validación;
+- explicar los resultados esperados;
+- revisar posteriormente la salida literal proporcionada por el usuario.
+
+Toda salida proporcionada por el usuario debe distinguirse de una salida ejecutada directamente por el asistente.
+
+La expresión “ejecutado”, “comprobado”, “validado” o equivalente solo puede utilizarse cuando exista evidencia real de ejecución.
+
+Si la capacidad de ejecución es incierta, debe considerarse inexistente hasta comprobar lo contrario.
+
 ## 8. LECTURA COMPLETA ANTES DE MODIFICAR
 
 Antes de editar un archivo:
