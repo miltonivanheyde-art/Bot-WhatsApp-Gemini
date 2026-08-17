@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Optional, Tuple
 
 # Default database file path for production/development, overridden for tests
 DEFAULT_DB_FILE = "data/tita.db"
@@ -40,9 +40,8 @@ class DatabaseManager:
             cursor.execute(query, params)
             self.conn.commit()
             return cursor
-        except sqlite3.Error as e:
+        except sqlite3.Error:
             self.conn.rollback()
-            print(f"Database write error on query: {query}. Error: {e}")
             raise
 
     def _execute_read_query(self, query: str, params: Tuple = ()) -> sqlite3.Cursor:
@@ -53,8 +52,7 @@ class DatabaseManager:
             cursor = self.conn.cursor()
             cursor.execute(query, params)
             return cursor
-        except sqlite3.Error as e:
-            print(f"Database read error on query: {query}. Error: {e}")
+        except sqlite3.Error:
             raise
 
     def create_schema(self):
@@ -161,7 +159,10 @@ class DatabaseManager:
             "INSERT INTO sources (canonical_url, source_domain, source_type) VALUES (?, ?, ?)",
             (canonical_url, source_domain, source_type)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'sources' table.")
+        return last_id
 
     def get_source_by_url(self, canonical_url: str) -> Optional[Dict[str, Any]]:
         cursor = self._execute_read_query("SELECT * FROM sources WHERE canonical_url = ?", (canonical_url,))
@@ -174,7 +175,10 @@ class DatabaseManager:
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (source_id, final_url, retrieval_date, content_hash, original_content, extracted_text, content_type, http_status_code, mime_type, "PENDING", None, None)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'knowledge_versions' table.")
+        return last_id
 
     def get_knowledge_version_by_id(self, version_id: int) -> Optional[Dict[str, Any]]:
         cursor = self._execute_read_query("SELECT * FROM knowledge_versions WHERE id = ?", (version_id,))
@@ -229,13 +233,12 @@ class DatabaseManager:
                 (version_id, event_type, event_by, event_date, notes)
             )
             self.conn.commit()
-        except sqlite3.Error as e:
+        except sqlite3.Error:
             self.conn.rollback()
-            print(f"Transaction error during status update for version {version_id}: {e}")
             raise
 
     def insert_knowledge_entry(self, title: str, keywords: Optional[str], description: Optional[str], active_version_id: Optional[int]) -> int:
-        if active_version_id:
+        if active_version_id is not None:
             version = self.get_knowledge_version_by_id(active_version_id)
             if not version or version['current_status'] != 'VALIDATED':
                 raise ValueError("active_version_id must point to a VALIDATED knowledge version.")
@@ -244,25 +247,37 @@ class DatabaseManager:
             "INSERT INTO knowledge_entries (title, keywords, description, active_version_id) VALUES (?, ?, ?, ?)",
             (title, keywords, description, active_version_id)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'knowledge_entries' table.")
+        return last_id
 
     def insert_form_identity(self, form_code: str, form_name: str, organism: str) -> int:
         cursor = self._execute_write_operation(
             "INSERT INTO form_identities (form_code, form_name, organism) VALUES (?, ?, ?)",
             (form_code, form_name, organism)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'form_identities' table.")
+        return last_id
 
     def insert_form_version(self, form_identity_id: int, knowledge_version_id: int, detected_version: Optional[str], official_date: Optional[str]) -> int:
         cursor = self._execute_write_operation(
             "INSERT INTO form_versions (form_identity_id, knowledge_version_id, detected_version, official_date) VALUES (?, ?, ?, ?)",
             (form_identity_id, knowledge_version_id, detected_version, official_date)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'form_versions' table.")
+        return last_id
 
     def insert_query_log(self, session_id: str, timestamp: str, response_type: str, used_knowledge_entry_id: Optional[int]) -> int:
         cursor = self._execute_write_operation(
             "INSERT INTO query_logs (session_id, timestamp, response_type, used_knowledge_entry_id) VALUES (?, ?, ?, ?)",
             (session_id, timestamp, response_type, used_knowledge_entry_id)
         )
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        if last_id is None:
+            raise RuntimeError("Failed to get last row ID after INSERT on 'query_logs' table.")
+        return last_id
