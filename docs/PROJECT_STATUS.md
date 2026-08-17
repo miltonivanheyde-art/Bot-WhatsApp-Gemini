@@ -2,7 +2,7 @@
 
 **Fecha de la última revisión:** 17 de agosto de 2026
 **Análisis realizado por:** Gemini Code Assist
-**Fuente de evidencia:** Código fuente del repositorio (`app/main.py`, `app/gemini_service.py`) y ejecución real del sistema.
+**Fuente de evidencia:** Análisis del código fuente (`app/main.py`, `app/gemini_service.py`, `app/database.py`, `app/web_retrieval_service.py`), pruebas locales ejecutadas por el usuario (`tests/test_database.py`, `tests/test_web_retrieval.py`) y ejecución real histórica del bot.
 
 ---
 
@@ -13,6 +13,8 @@ El proyecto es un bot de WhatsApp implementado en Python con el framework FastAP
 **El bot se encuentra actualmente en un estado plenamente funcional, con la integración de la Inteligencia Artificial de Gemini completamente operativa.** La aplicación procesa los mensajes entrantes de WhatsApp, mantiene el contexto de la conversación (memoria) y genera respuestas dinámicas utilizando la API `Interactions` de Gemini.
 
 Este informe actualiza el estado del proyecto, invalidando las conclusiones de informes anteriores que describían un estado de "mantenimiento" o una falta de implementación de la IA. La arquitectura objetivo definida en `IA_CANON.md` para las capacidades básicas de interacción y memoria ha sido alcanzada y está en producción local.
+
+Adicionalmente, se ha iniciado el desarrollo de una Capa de Conocimiento Verificable. Las fases iniciales, que incluyen el acceso SQLite aislado y no integrado (Fase B) y un servicio de recuperación web seguro (Fase C), han sido implementadas y validadas de forma aislada, pero aún no están integradas en el flujo operativo del bot.
 
 ---
 
@@ -41,7 +43,9 @@ El análisis del código fuente (`app/main.py` y `app/gemini_service.py`) y la e
 - **Túnel de Red:** Ngrok (para exponer el servidor local a internet)
 - **Dependencias Principales (`requirements.txt`):** `fastapi`, `uvicorn`, `python-dotenv`, `requests`, `ngrok`, `google-genai`.
 - **Gestión de Secretos:** El sistema utiliza el paquete `python-dotenv` para cargar variables de entorno (tokens y claves) desde un archivo `bot.env`, que está correctamente excluido del control de versiones mediante `.gitignore`.
-- **Persistencia de Estado:** El archivo `state.json` se utiliza para la persistencia del estado de la conversación y también está excluido del control de versiones.
+- **Persistencia de Estado:** El sistema utiliza dos mecanismos de persistencia distintos:
+  - **`state.json`:** Para la memoria conversacional de Gemini (ID de interacción), integrado y en uso.
+  - **`app/database.py` (SQLite):** Para la futura Capa de Conocimiento Verificable. Este componente ha sido implementado y validado de forma aislada (`tests/test_database.py`) y no está integrado en el flujo principal.
 
 ---
 
@@ -100,21 +104,21 @@ La integración de las capacidades fundamentales de Gemini en el flujo productiv
 ### Capacidades Pendientes de Validación Funcional
 
 - ⚠️ **Agents:** La API `client.agents` existe, pero su creación y funcionamiento no han sido validados con éxito. La investigación sobre `Agents` sigue en suspenso.
-- ⚠️ **Investigación ANSES:** Existe una línea de investigación sobre adquisición y estructuración de conocimiento ANSES. Actualmente se encuentra en fase exploratoria. Las herramientas locales de crawling, scraping y extracción documental no forman parte de la arquitectura oficial del sistema y no deben considerarse componentes validados.
+- ⚠️ **Capa de Conocimiento Verificable (en desarrollo):** La línea de investigación evolucionó hacia una implementación formal por fases. `app/web_retrieval_service.py` está implementado y validado de forma aislada para recuperación puntual controlada desde fuentes oficiales, sin crawling ni scraping masivo. Su integración con la base de datos y el flujo del bot permanece pendiente.
 
 ---
 
 ## 6. Estado Git Observable
 
 - **Configuración (`.gitignore`):** El archivo está correctamente configurado para excluir del repositorio el entorno virtual, la caché de Python y, crucialmente, los archivos de secretos (`bot.env`, `.env`) y de estado (`state.json`).
-- **Ramas y Commits:** El estado de la rama actual, el historial de commits y la existencia de tags no son verificables desde el contexto de análisis de archivos. La `doctrina.md` prescribe el uso de la rama `feature/integracion-gemini` para el trabajo de desarrollo.
+- **Ramas y Commits:** El desarrollo se gestiona en ramas de funcionalidad. La integración inicial de Gemini se completó en `feature/integracion-gemini`. El desarrollo de la Capa de Conocimiento se está realizando en la rama `feature/knowledge-web-retrieval`.
 
 ---
 
 ## 7. Riesgos Actuales
 
 1. **Discrepancia Documental:** Aunque este informe busca corregirla, la documentación histórica (`PROJECT_STATUS.md` e `IA_CANON.md` en sus versiones anteriores) contenía información obsoleta que podría generar confusión si no se actualiza formalmente.
-2. **Incertidumbre del Baseline:** La `doctrina.md` menciona un baseline funcional (`whatsapp-baseline-funcional`), pero su existencia y validez no pueden ser verificadas directamente desde el contexto de archivos, lo que podría comprometer una estrategia de rollback si no se gestiona adecuadamente.
+2. **Rollback disponible:** El tag verificado `knowledge-layer-phase-b` proporciona un punto de restauración para la capa de conocimiento.
 3. **Escalabilidad de Persistencia:** La persistencia actual mediante `state.json` es adecuada para el estado operativo actual del proyecto. Requerimientos futuros de escalabilidad deberán evaluarse cuando exista evidencia concreta que lo justifique.
 
 ---
@@ -151,7 +155,7 @@ La fase de integración inicial de Gemini se declara formalmente **concluida y e
 
 ### Nueva Directiva Operativa
 
-La prioridad del proyecto pasa de la integración básica a la **evolución de capacidades y la mejora continua**. Las capacidades de `Tool Calling` y `Grounding` fueron validadas funcionalmente y permanecen disponibles para futuras decisiones de integración. La investigación sobre `Agents` y la integración de conocimiento específico (como el de ANSES) son otras líneas de trabajo posibles.
+La prioridad del proyecto es continuar con la implementación por fases de la Capa de Conocimiento Verificable, según lo definido en `docs/KNOWLEDGE_LAYER_DESIGN.md`. La siguiente etapa propuesta, pendiente de autorización, es la Fase D (Servicio de Conocimiento Aislado). Las capacidades de `Tool Calling` y `Grounding` permanecen validadas y disponibles para una futura integración una vez que la capa de conocimiento esté operativa.
 
 ---
 
@@ -187,30 +191,31 @@ La prioridad del proyecto pasa de la integración básica a la **evolución de c
 
 ### Fase C: Recuperación Puntual Aislada
 
-*   **Estado:** ✅ IMPLEMENTADA Y VALIDADA DE FORMA AISLADA.
-*   **Evidencia (proporcionada por el usuario):**
-    *   `app/web_retrieval_service.py` creado.
-    *   `tests/test_web_retrieval.py` creado.
-    *   Compilación de sintaxis finalizó sin errores.
-    *   20 pruebas unitarias del recuperador web ejecutadas con resultado `OK`.
-    *   17 pruebas de regresión de la capa de base de datos (SQLite) ejecutadas con resultado `OK`.
-    *   `git diff --check` finalizó sin errores.
-*   **Commit:** `cc46537`
-*   **Estado del Repositorio (post-Fase C):**
-    *   **Rama:** `feature/knowledge-web-retrieval`.
-    *   Cambios publicados en el repositorio remoto.
-    *   Árbol de trabajo limpio (`working tree clean`) después del `push`.
+- **Estado:** ✅ IMPLEMENTADA Y VALIDADA DE FORMA AISLADA.
+- **Evidencia (proporcionada por el usuario):**
+  - `app/web_retrieval_service.py` creado.
+  - `tests/test_web_retrieval.py` creado.
+  - Compilación de sintaxis finalizó sin errores.
+  - 20 pruebas unitarias del recuperador web ejecutadas con resultado `OK`.
+  - 17 pruebas de regresión de la capa de base de datos (SQLite) ejecutadas con resultado `OK`.
+  - `git diff --check` finalizó sin errores.
+- **Commit:** `cc46537`
+- **Estado del Repositorio (post-Fase C):**
+  - **Rama:** `feature/knowledge-web-retrieval`.
+  - Cambios publicados en el repositorio remoto.
+  - Árbol de trabajo limpio (`working tree clean`) después del `push`.
 
 **Capacidades Implementadas Aisladamente:**
--   HTTPS obligatorio.
--   Dominios permitidos: `anses.gob.ar` y `argentina.gob.ar`, incluidos subdominios.
--   Manejo manual de hasta 3 redirecciones, con validación de seguridad en cada paso.
--   Validación de todas las direcciones IPv4 e IPv6 devueltas por `getaddrinfo`.
--   Bloqueo de direcciones IP no globales (privadas, loopback, etc.) para mitigar SSRF.
--   Límites de tamaño de contenido (10 MB) y tipos MIME.
--   Descarga incremental de contenido.
--   Cálculo de hash SHA-256.
--   Manejo de errores controlado mediante excepciones personalizadas.
+
+- HTTPS obligatorio.
+- Dominios permitidos: `anses.gob.ar` y `argentina.gob.ar`, incluidos subdominios.
+- Manejo manual de hasta 3 redirecciones, con validación de seguridad en cada paso.
+- Validación de todas las direcciones IPv4 e IPv6 devueltas por `getaddrinfo`.
+- Bloqueo de direcciones IP no globales (privadas, loopback, etc.) para mitigar SSRF.
+- Límites de tamaño de contenido (10 MB) y tipos MIME.
+- Descarga incremental de contenido.
+- Cálculo de hash SHA-256.
+- Manejo de errores controlado mediante excepciones personalizadas.
 
 ### Aclaraciones Obligatorias sobre el Estado Actual
 
