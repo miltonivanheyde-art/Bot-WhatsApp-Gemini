@@ -1,13 +1,13 @@
 # DISEÑO DE CAPA DE CONOCIMIENTO VERIFICABLE
 
 **Versión:** 3.1
-**Estado:** ARQUITECTURA APROBADA | FASE B IMPLEMENTADA Y VALIDADA DE FORMA AISLADA | INTEGRACIÓN FUNCIONAL PENDIENTE
+**Estado:** ARQUITECTURA APROBADA | FASES B Y C IMPLEMENTADAS Y VALIDADAS AISLADAMENTE | INTEGRACIÓN FUNCIONAL PENDIENTE
 
 ## 1. Estado y Alcance
 
 Este documento define la arquitectura para una **Capa de Conocimiento Verificable**. Su objetivo es permitir que el bot Tita responda consultas institucionales utilizando una base de datos local, poblada con información recuperada de manera controlada desde fuentes oficiales y validada por humanos.
 
-Esta propuesta ha sido aprobada. Los componentes `app/database.py` y `tests/test_database.py` (Fase B) están implementados y validados aisladamente. Los demás componentes (`knowledge_service`, `web_retrieval_service`, etc.) y la integración funcional completa continúan pendientes.
+Esta propuesta ha sido aprobada. Los componentes de las Fases B (`app/database.py`) y C (`app/web_retrieval_service.py`) están implementados y validados aisladamente. Los demás componentes y la integración funcional completa continúan pendientes.
 
 ## 2. Principios de Seguridad y Confianza
 
@@ -271,6 +271,7 @@ La implementación de esta capa se propone en las siguientes fases atómicas:
   * **Criterios de Aceptación:** `app/database.py` funcional y probado de forma aislada.
 
 * **Fase C: Recuperación Puntual Aislada.**
+  * **Estado:** ✅ COMPLETADA (Implementación y validación aislada).
   * **Objetivo:** Crear `app/web_retrieval_service.py` y validarlo con pruebas unitarias que demuestren la recuperación de contenido, manejo de redirecciones, clasificación de fuentes y validación técnica mínima desde dominios permitidos.
   * **Archivos Previstos:** `app/web_retrieval_service.py`, `tests/test_web_retrieval.py` (nuevo).
   * **Componentes Protegidos:** `app/main.py`, `app/gemini_service.py`, `app/database.py`.

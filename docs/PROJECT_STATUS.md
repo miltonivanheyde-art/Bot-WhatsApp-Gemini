@@ -185,13 +185,41 @@ La prioridad del proyecto pasa de la integración básica a la **evolución de c
   - Cambios sincronizados con el repositorio remoto.
   - Árbol de trabajo limpio (`working tree clean`) después del `push`.
 
-### Aclaraciones Obligatorias sobre el Estado Actual
+### Fase C: Recuperación Puntual Aislada
 
-Es crucial entender que únicamente la persistencia de datos de la Fase B ha sido validada de forma aislada. La capa completa **NO** es funcional.
+*   **Estado:** ✅ IMPLEMENTADA Y VALIDADA DE FORMA AISLADA.
+*   **Evidencia (proporcionada por el usuario):**
+    *   `app/web_retrieval_service.py` creado.
+    *   `tests/test_web_retrieval.py` creado.
+    *   Compilación de sintaxis finalizó sin errores.
+    *   20 pruebas unitarias del recuperador web ejecutadas con resultado `OK`.
+    *   17 pruebas de regresión de la capa de base de datos (SQLite) ejecutadas con resultado `OK`.
+    *   `git diff --check` finalizó sin errores.
+*   **Commit:** `cc46537`
+*   **Estado del Repositorio (post-Fase C):**
+    *   **Rama:** `feature/knowledge-web-retrieval`.
+    *   Cambios publicados en el repositorio remoto.
+    *   Árbol de trabajo limpio (`working tree clean`) después del `push`.
+
+**Capacidades Implementadas Aisladamente:**
+-   HTTPS obligatorio.
+-   Dominios permitidos: `anses.gob.ar` y `argentina.gob.ar`, incluidos subdominios.
+-   Manejo manual de hasta 3 redirecciones, con validación de seguridad en cada paso.
+-   Validación de todas las direcciones IPv4 e IPv6 devueltas por `getaddrinfo`.
+-   Bloqueo de direcciones IP no globales (privadas, loopback, etc.) para mitigar SSRF.
+-   Límites de tamaño de contenido (10 MB) y tipos MIME.
+-   Descarga incremental de contenido.
+-   Cálculo de hash SHA-256.
+-   Manejo de errores controlado mediante excepciones personalizadas.
+
+### Aclaraciones Obligatorias sobre el Estado Actual
 
 - **Integración con el Bot:** ❌ No existe integración con `app/main.py`.
 - **Integración con IA:** ❌ No existe integración con `app/gemini_service.py`.
-- **Recuperación Web:** ❌ No se ha implementado `app/web_retrieval_service.py`.
+- **Integración con Base de Datos:** ❌ No existe integración entre `web_retrieval_service` y `database.py`.
+- **Recuperación Web:** ✅ `app/web_retrieval_service.py` está implementado y validado de forma aislada, pero no está integrado ni habilitado para uso productivo.
 - **Servicio de Conocimiento:** ❌ No se ha implementado `app/knowledge_service.py`.
 - **Validación Humana:** ❌ No existe la herramienta de validación humana.
 - **Base de Datos:** ⚠️ El archivo `data/tita.db` (si existe) es para desarrollo y no constituye una base de conocimiento poblada o productiva.
+- **Validación:** ❌ No se realizaron pruebas con acceso a internet real. El módulo no tiene uso productivo.
+- **Riesgos y Funcionalidad Pendiente:** ⚠️ La correspondencia temática queda pendiente. Permanece documentado el riesgo de DNS rebinding/TOCTOU. La Capa de Conocimiento Verificable completa todavía no está validada funcionalmente.
