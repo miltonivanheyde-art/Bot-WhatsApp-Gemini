@@ -262,5 +262,29 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertIsNone(self.db_manager.search_validated_knowledge("asignaciones"), "No debería encontrar contenido PENDING")
         self.assertIsNone(self.db_manager.search_validated_knowledge("créditos"), "No debería encontrar contenido REJECTED")
 
+    def test_list_knowledge_versions_by_status(self):
+        """Prueba listar versiones por estado, con límite y casos vacíos."""
+        source_id = self.db_manager.insert_source("https://anses.gob.ar/list-test", "anses.gob.ar", "official")
+        # Crear 2 PENDING
+        self.db_manager.insert_knowledge_version(source_id=source_id, final_url="p1", retrieval_date="d", content_hash="h1", original_content=b"c", extracted_text=None, content_type="pagina", http_status_code=200, mime_type="text/html")
+        self.db_manager.insert_knowledge_version(source_id=source_id, final_url="p2", retrieval_date="d", content_hash="h2", original_content=b"c", extracted_text=None, content_type="pagina", http_status_code=200, mime_type="text/html")
+        # Crear 1 VALIDATED
+        v_id = self.db_manager.insert_knowledge_version(source_id=source_id, final_url="v1", retrieval_date="d", content_hash="h3", original_content=b"c", extracted_text=None, content_type="pagina", http_status_code=200, mime_type="text/html")
+        self.db_manager.update_knowledge_version_status(v_id, "VALIDATED", "user", "d")
+
+        # Prueba 1: Listar PENDING, debe devolver 2
+        pending_list = self.db_manager.list_knowledge_versions_by_status("PENDING")
+        self.assertEqual(len(pending_list), 2)
+        # El último insertado debe ser el primero por el ORDER BY id DESC
+        self.assertEqual(pending_list[0]['final_url'], 'p2')
+
+        # Prueba 2: Listar PENDING con límite 1, debe devolver 1
+        pending_list_limit = self.db_manager.list_knowledge_versions_by_status("PENDING", limit=1)
+        self.assertEqual(len(pending_list_limit), 1)
+
+        # Prueba 3: Listar REJECTED, debe devolver 0
+        rejected_list = self.db_manager.list_knowledge_versions_by_status("REJECTED")
+        self.assertEqual(len(rejected_list), 0)
+
 if __name__ == '__main__':
     unittest.main()

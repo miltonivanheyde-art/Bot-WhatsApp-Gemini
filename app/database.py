@@ -207,6 +207,21 @@ class DatabaseManager:
         row = cursor.fetchone()
         return dict(row) if row else None
 
+    def list_knowledge_versions_by_status(self, status: str, limit: int = 10) -> list[Dict[str, Any]]:
+        """
+        Lista las versiones de conocimiento por un estado específico, ordenadas por ID descendente.
+        """
+        query = """
+            SELECT id, final_url, retrieval_date, mime_type, content_hash
+            FROM knowledge_versions
+            WHERE current_status = ?
+            ORDER BY id DESC
+            LIMIT ?
+        """
+        cursor = self._execute_read_query(query, (status, limit))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
+
     def update_knowledge_version_status(self, version_id: int, new_status: str, event_by: str, event_date: str, notes: Optional[str] = None):
         """
         Updates the status of a knowledge_version and logs the validation event in a single transaction.
