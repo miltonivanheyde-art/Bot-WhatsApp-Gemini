@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timezone, timedelta
+import json
 from dotenv import load_dotenv
 from google import genai
 
@@ -11,6 +12,8 @@ load_dotenv("bot.env")
 
 DEFAULT_GEMINI_MODEL = "models/gemini-flash-lite-latest"
 SYSTEM_PROMPT_PATH = "app/gemini_system_prompt.md"
+KNOWLEDGE_BASE_PATH = "app/knowledge_base.md"
+FORMS_CATALOG_PATH = "app/formularios_oficiales.json"
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -20,17 +23,39 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 
 CLIENT = None
 BASE_SYSTEM_INSTRUCTION = None
+KNOWLEDGE_BASE_CONTENT = None
+FORMS_CATALOG_CONTENT = None
 
 if API_KEY:
     CLIENT = genai.Client(api_key=API_KEY)
     try:
         with open(SYSTEM_PROMPT_PATH, "r", encoding="utf-8") as f:
             BASE_SYSTEM_INSTRUCTION = f.read()
-        print(f"[PROMPT] System instruction cargada desde: {SYSTEM_PROMPT_PATH}")
+        print(f"[GEMINI SERVICE] System instruction cargada desde: {SYSTEM_PROMPT_PATH}")
     except FileNotFoundError:
-        print(f"[PROMPT WARNING] Archivo no encontrado: {SYSTEM_PROMPT_PATH}")
+        print(f"[GEMINI SERVICE WARNING] Archivo no encontrado: {SYSTEM_PROMPT_PATH}")
     except Exception as e:
-        print(f"[PROMPT ERROR] {e}")
+        print(f"[GEMINI SERVICE ERROR] Error al cargar system prompt: {e}")
+
+    try:
+        with open(KNOWLEDGE_BASE_PATH, "r", encoding="utf-8") as f:
+            KNOWLEDGE_BASE_CONTENT = f.read()
+        print(f"[GEMINI SERVICE] Base de conocimiento cargada desde: {KNOWLEDGE_BASE_PATH}")
+    except FileNotFoundError:
+        print(f"[GEMINI SERVICE WARNING] Archivo no encontrado: {KNOWLEDGE_BASE_PATH}")
+    except Exception as e:
+        print(f"[GEMINI SERVICE ERROR] Error al cargar base de conocimiento: {e}")
+
+    try:
+        with open(FORMS_CATALOG_PATH, "r", encoding="utf-8") as f:
+            FORMS_CATALOG_CONTENT = json.load(f)
+        print(f"[GEMINI SERVICE] Catálogo de formularios cargado desde: {FORMS_CATALOG_PATH}")
+    except FileNotFoundError:
+        print(f"[GEMINI SERVICE WARNING] Archivo no encontrado: {FORMS_CATALOG_PATH}")
+    except json.JSONDecodeError as e:
+        print(f"[GEMINI SERVICE ERROR] Error de formato JSON en catálogo de formularios: {e}")
+    except Exception as e:
+        print(f"[GEMINI SERVICE ERROR] Error al cargar catálogo de formularios: {e}")
 
 
 # ==========================================================
@@ -78,6 +103,18 @@ def generar_respuesta_gemini(
             final_system_instruction = final_system_instruction.replace(
                 "{current_datetime_ar}", datetime_ar_str
             )
+
+        # Inyección de la base de conocimiento institucional
+        if KNOWLEDGE_BASE_CONTENT:
+            final_system_instruction += "\n\n[INICIO DATOS INSTITUCIONALES VERIFICADOS]\n"
+            final_system_instruction += KNOWLEDGE_BASE_CONTENT
+            final_system_instruction += "\n[FIN DATOS INSTITUCIONALES VERIFICADOS]\n"
+
+        # Inyección del catálogo de formularios oficiales
+        if FORMS_CATALOG_CONTENT:
+            final_system_instruction += "\n\n[INICIO CATÁLOGO DE FORMULARIOS OFICIALES]\n"
+            final_system_instruction += json.dumps(FORMS_CATALOG_CONTENT, indent=2, ensure_ascii=False)
+            final_system_instruction += "\n[FIN CATÁLOGO DE FORMULARIOS OFICIALES]\n"
 
         # Llamada final y correcta a la API de Gemini.
         response = CLIENT.interactions.create(

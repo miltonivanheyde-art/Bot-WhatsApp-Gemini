@@ -1,0 +1,45 @@
+{
+    "ps_1_47": {
+        "title": "Formulario Libreta AUH PS 1.47",
+        "aliases": [
+            "ps 1.47",
+            "ps1.47",
+            "libreta",
+            "libreta auh",
+            "formulario libreta",
+            "auh"
+        ],
+        "url": "https://www.anses.gob.ar/sites/default/files/formulario/2024-01/PS%201.47%20Formulario%20Libreta.pdf",
+        "filename": "PS-1.47-Libreta-AUH.pdf",
+        "mime_type": "application/pdf",
+        "status": "ACTIVE"
+    },
+    "ps_2_10": {
+        "title": "Formulario PS 2.10 Embarazo Protección Social",
+        "aliases": [
+            "ps 2.10",
+            "ps2.10",
+            "embarazo",
+            "asignacion por embarazo",
+            "proteccion social embarazo"
+        ],
+        "url": "https://www.anses.gob.ar/sites/default/files/formulario/2026-07/PS-2.10-Embarazo-proteccion-social.pdf",
+        "filename": "PS-2.10-Embarazo-Proteccion-Social.pdf",
+        "mime_type": "application/pdf",
+        "status": "ACTIVE"
+    },
+    "ps_2_68": {
+        "title": "Formulario PS 2.68 Escolaridad",
+        "aliases": [
+            "ps 2.68",
+            "ps2.68",
+            "escolaridad",
+            "ayuda escolar",
+            "formulario escolaridad"
+        ],
+        "url": "https://www.anses.gob.ar/sites/default/files/formulario/2026-07/PS-2.68-escolaridad.pdf",
+        "filename": "PS-2.68-Escolaridad.pdf",
+        "mime_type": "application/pdf",
+        "status": "ACTIVE"
+    }
+}
