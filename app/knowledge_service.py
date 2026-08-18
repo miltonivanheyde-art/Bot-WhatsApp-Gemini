@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Optional, Any, Dict
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
 
 from app.database import DatabaseManager
 from app.web_retrieval_service import (
@@ -51,6 +52,50 @@ class KnowledgeService:
         self.db_path = db_path
         self.db_manager = DatabaseManager(db_path)
 
+    def _extract_and_clean_text(self, content: RetrievedContent) -> Optional[str]:
+        """Extrae y limpia el texto del contenido recuperado, aplicando políticas de calidad."""
+        MAX_TEXT_LENGTH = 20000
+        MIN_TEXT_LENGTH = 50  # Mínimo de caracteres para ser considerado útil
+
+        text = ""
+        if content.mime_type == "text/html":
+            # Detección de páginas de bloqueo o contenido no útil
+            content_lower = content.original_content.lower()
+            if b"incapsula" in content_lower:
+                raise RetrievalError("Contenido bloqueado por sistema anti-bot (Incapsula).")
+            if b"<rdf:rdf" in content_lower or b"<rss" in content_lower:
+                raise RetrievalError("Contenido técnico (RDF/RSS) no procesable.")
+
+            soup = BeautifulSoup(content.original_content, 'lxml')
+
+            # Eliminar etiquetas no deseadas
+            for tag in soup(['script', 'style', 'noscript', 'svg', 'template', 'nav', 'header', 'footer']):
+                tag.decompose()
+
+            text = soup.get_text(separator='\n', strip=True)
+
+        elif content.mime_type == "text/plain":
+            try:
+                text = content.original_content.decode('utf-8')
+            except UnicodeDecodeError:
+                raise RetrievalError("No se pudo decodificar el contenido de texto plano.")
+
+        elif content.mime_type == "application/pdf":
+            return None  # La extracción de PDF no está implementada
+
+        else:
+            return None # No se extrae texto de otros tipos de contenido
+
+        # Normalizar espacios y líneas en blanco
+        cleaned_text = "\n".join(line.strip() for line in text.splitlines() if line.strip())
+
+        # Rechazar si el contenido limpio es demasiado corto o está vacío
+        if not cleaned_text or len(cleaned_text) < MIN_TEXT_LENGTH:
+            raise RetrievalError("El contenido extraído está vacío o es demasiado corto para ser útil.")
+
+        # Limitar el tamaño final del texto almacenado
+        return cleaned_text[:MAX_TEXT_LENGTH]
+
     def _search_local_validated(self, query_text: str) -> Optional[ValidatedKnowledge]:
         """
         Busca conocimiento validado en la base de datos local usando la API pública.
@@ -72,6 +117,9 @@ class KnowledgeService:
         """
         Almacena el contenido recuperado en la base de datos con estado PENDING.
         """
+        # Extraer y limpiar el texto antes de cualquier operación de base de datos
+        extracted_text = self._extract_and_clean_text(retrieved_content)
+
         try:
             self.db_manager.connect()
             
@@ -98,7 +146,7 @@ class KnowledgeService:
                 retrieval_date=retrieved_content.retrieval_date,
                 content_hash=retrieved_content.content_hash,
                 original_content=retrieved_content.original_content,
-                extracted_text=None,  # La extracción de texto es una fase posterior
+                extracted_text=extracted_text,
                 content_type="pagina", # Placeholder, debería ser más dinámico
                 http_status_code=retrieved_content.http_status_code,
                 mime_type=retrieved_content.mime_type
@@ -126,8 +174,8 @@ class KnowledgeService:
                     notice = PendingNotice(final_url=retrieved_content.final_url)
                     return ServiceResponse(status=KnowledgeStatus.PENDING_NOTICE, data=notice)
 
-                except RetrievalError as e:
-                    return ServiceResponse(status=KnowledgeStatus.ERROR, error_message=f"Error de recuperación: {e}")
+                except RetrievalError as e: # Captura errores de recuperación y de limpieza de contenido
+                    return ServiceResponse(status=KnowledgeStatus.ERROR, error_message=f"Error de recuperación o contenido: {e}")
 
             # 3. Si no se encuentra localmente y no hay URL, es NOT_FOUND
             return ServiceResponse(status=KnowledgeStatus.NOT_FOUND)

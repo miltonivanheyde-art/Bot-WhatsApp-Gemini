@@ -42,16 +42,21 @@ class KnowledgeAdminService:
             if not version:
                 return f"Error: No se encontró la versión con ID {version_id}."
 
-            preview = version['original_content'][:200].decode('utf-8', 'ignore')
+            preview_text = ""
+            if version.get('extracted_text'):
+                preview_text = version['extracted_text'][:500]
+                if len(version['extracted_text']) > 500:
+                    preview_text += "\n\n... (Vista previa recortada)"
+            else:
+                preview_text = "Sin texto limpio disponible. No validar."
+
             return (
                 f"Detalles de la Versión ID: {version['id']}\n"
                 f"--------------------\n"
                 f"Estado: {version['current_status']}\n"
                 f"URL: {version['final_url']}\n"
-                f"Fecha: {version['retrieval_date']}\n"
                 f"MIME: {version['mime_type']}\n"
-                f"Hash: {version['content_hash'][:12]}...\n\n"
-                f"Vista Previa:\n---\n{preview}..."
+                f"Texto Extraído:\n---\n{preview_text}"
             )
         finally:
             self.db_manager.close()

@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+from bs4 import BeautifulSoup
 
 from app.knowledge_service import (
     KnowledgeService,
@@ -54,7 +55,7 @@ class TestKnowledgeService(unittest.TestCase):
             final_url="https://www.anses.gob.ar/final-pending",
             http_status_code=200,
             content_hash="somehash",
-            original_content=b"pending content",
+            original_content=b"<html><body><p>El Programa de Atencion Medica Integral (PAMI) es la obra social de los jubilados y pensionados, de las personas mayores de 70 anios sin jubilacion y de los ex combatientes de Malvinas.</p></body></html>",
             mime_type="text/html",
             source_domain="www.anses.gob.ar",
             source_type="official",
@@ -85,8 +86,8 @@ class TestKnowledgeService(unittest.TestCase):
             final_url="https://www.anses.gob.ar/final-pending",
             retrieval_date="a-date",
             content_hash="somehash",
-            original_content=b"pending content",
-            extracted_text=None,
+            original_content=b"<html><body><p>El Programa de Atencion Medica Integral (PAMI) es la obra social de los jubilados y pensionados, de las personas mayores de 70 anios sin jubilacion y de los ex combatientes de Malvinas.</p></body></html>",
+            extracted_text="El Programa de Atencion Medica Integral (PAMI) es la obra social de los jubilados y pensionados, de las personas mayores de 70 anios sin jubilacion y de los ex combatientes de Malvinas.",
             content_type="pagina",
             http_status_code=200,
             mime_type="text/html"
@@ -125,7 +126,7 @@ class TestKnowledgeService(unittest.TestCase):
 
         self.assertEqual(response.status, KnowledgeStatus.ERROR)
         assert response.error_message is not None
-        self.assertIn("Error de recuperación: 404 Not Found", response.error_message)
+        self.assertIn("Error de recuperación o contenido: 404 Not Found", response.error_message)
 
     @patch('app.knowledge_service.retrieve_source_content')
     def test_uses_existing_source_on_retrieval(self, mock_retrieve_source_content):
@@ -140,7 +141,7 @@ class TestKnowledgeService(unittest.TestCase):
             final_url="https://www.anses.gob.ar/existing-final",
             http_status_code=200,
             content_hash="newhash",
-            original_content=b"new content",
+            original_content=b"La Asignacion Universal por Hijo (AUH) es una suma mensual que se paga por cada hijo o hija menor de 18 anios cuando sus padres estan desocupados.",
             mime_type="text/html",
             source_domain="www.anses.gob.ar",
             source_type="official",
@@ -156,12 +157,89 @@ class TestKnowledgeService(unittest.TestCase):
         self.assertIsInstance(response.data, PendingNotice)
         assert response.data is not None
         self.assertEqual(response.data.final_url, "https://www.anses.gob.ar/existing-final")
-        
+
         # Verificar que NO se intentó crear una nueva fuente
         self.mock_db_manager.insert_source.assert_not_called()
         # Verificar que se insertó una nueva versión usando el ID de fuente existente
         self.mock_db_manager.insert_knowledge_version.assert_called_once()
         self.assertEqual(self.mock_db_manager.insert_knowledge_version.call_args[1]['source_id'], 42)
+
+    def test_html_extraction_and_cleaning(self):
+        """Prueba que el HTML se limpia correctamente antes de almacenarse."""
+        html_content = b"""
+        <html>
+            <head><style>.hide{display:none}</style></head>
+            <body>
+                <header>Ignored Header</header>
+                <nav>Ignored Nav</nav>
+                <p>  La Libreta de Asignacion Universal acredita el cumplimiento de los controles de salud, vacunacion y educacion de los ninos y ninas.  </p>
+                <script>alert('ignored script');</script>
+                <footer>Ignored Footer</footer>
+            </body>
+        </html>
+        """
+        retrieved_content = RetrievedContent("url", "url", 200, "hash", html_content, "text/html", "domain", "official", "date")
+
+        # Simular que no hay nada en la DB para forzar el almacenamiento
+        self.mock_db_manager.search_validated_knowledge.return_value = None
+        with patch('app.knowledge_service.retrieve_source_content', return_value=retrieved_content):
+            self.service.handle_query("query", requested_url="url")
+
+        self.mock_db_manager.insert_knowledge_version.assert_called_once()
+        call_args = self.mock_db_manager.insert_knowledge_version.call_args[1]
+        self.assertEqual(call_args['extracted_text'], "La Libreta de Asignacion Universal acredita el cumplimiento de los controles de salud, vacunacion y educacion de los ninos y ninas.")
+
+    def test_extraction_fails_on_antibot_page(self):
+        """Prueba que el almacenamiento falla si se detecta una página anti-bot."""
+        incapsula_content = b"<html><title>Incapsula</title><body>Request unsuccessful.</body></html>"
+        retrieved_content = RetrievedContent("url", "url", 200, "hash", incapsula_content, "text/html", "domain", "official", "date")
+
+        self.mock_db_manager.search_validated_knowledge.return_value = None
+        with patch('app.knowledge_service.retrieve_source_content', return_value=retrieved_content):
+            response = self.service.handle_query("query", requested_url="url")
+
+        self.assertEqual(response.status, KnowledgeStatus.ERROR)
+        self.assertIn("Incapsula", response.error_message)
+        self.mock_db_manager.insert_knowledge_version.assert_not_called()
+
+    def test_extraction_fails_on_short_content(self):
+        """Prueba que el almacenamiento falla si el texto extraído es muy corto."""
+        short_content = b"<p>Ok</p>"
+        retrieved_content = RetrievedContent("url", "url", 200, "hash", short_content, "text/html", "domain", "official", "date")
+
+        self.mock_db_manager.search_validated_knowledge.return_value = None
+        with patch('app.knowledge_service.retrieve_source_content', return_value=retrieved_content):
+            response = self.service.handle_query("query", requested_url="url")
+
+        self.assertEqual(response.status, KnowledgeStatus.ERROR)
+        self.assertIn("demasiado corto", response.error_message)
+        self.mock_db_manager.insert_knowledge_version.assert_not_called()
+
+    def test_text_plain_extraction(self):
+        """Prueba la extracción y normalización de texto plano."""
+        plain_content = b"  Calendario de Pagos - Jubilados y Pensionados\n\n  Documentos terminados en 0: 08/08/2026\n  Documentos terminados en 1: 09/08/2026  "
+        retrieved_content = RetrievedContent("url", "url", 200, "hash", plain_content, "text/plain", "domain", "official", "date")
+
+        self.mock_db_manager.search_validated_knowledge.return_value = None
+        with patch('app.knowledge_service.retrieve_source_content', return_value=retrieved_content):
+            self.service.handle_query("query", requested_url="url")
+
+        self.mock_db_manager.insert_knowledge_version.assert_called_once()
+        call_args = self.mock_db_manager.insert_knowledge_version.call_args[1]
+        self.assertEqual(call_args['extracted_text'], "Calendario de Pagos - Jubilados y Pensionados\nDocumentos terminados en 0: 08/08/2026\nDocumentos terminados en 1: 09/08/2026")
+
+    def test_pdf_is_not_extracted(self):
+        """Prueba que para un PDF, el texto extraído es None."""
+        pdf_content = b"%PDF-1.4..."
+        retrieved_content = RetrievedContent("url", "url", 200, "hash", pdf_content, "application/pdf", "domain", "official", "date")
+
+        self.mock_db_manager.search_validated_knowledge.return_value = None
+        with patch('app.knowledge_service.retrieve_source_content', return_value=retrieved_content):
+            self.service.handle_query("query", requested_url="url")
+
+        self.mock_db_manager.insert_knowledge_version.assert_called_once()
+        call_args = self.mock_db_manager.insert_knowledge_version.call_args[1]
+        self.assertIsNone(call_args['extracted_text'])
 
 if __name__ == '__main__':
     unittest.main()

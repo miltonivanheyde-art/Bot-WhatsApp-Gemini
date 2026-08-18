@@ -29,17 +29,27 @@ class TestKnowledgeAdminService(unittest.TestCase):
         self.mock_db_manager.list_knowledge_versions_by_status.assert_called_once_with('PENDING', limit=10)
 
     def test_show_limited_preview(self):
-        """Prueba que 'ver' muestra una vista previa limitada y no el blob completo."""
-        long_content = b"start " + b"a" * 1000 + b" end"
+        """Prueba que 'ver' prioriza el texto extraído y lo recorta."""
+        long_text = "a" * 600
         self.mock_db_manager.get_knowledge_version_by_id.return_value = {
             'id': 1, 'current_status': 'PENDING', 'final_url': 'url',
             'retrieval_date': 'date', 'mime_type': 'type', 'content_hash': 'hash',
-            'extracted_text': None, 'original_content': long_content
+            'extracted_text': long_text, 'original_content': b'original'
         }
         response = self.admin_service.process_command("/admin ver 1", "admin1")
-        self.assertIn("Vista Previa", response)
-        self.assertTrue(len(response) < 500)
-        self.assertNotIn(long_content.decode(), response)
+        self.assertIn("Texto Extraído", response)
+        self.assertIn("... (Vista previa recortada)", response)
+        self.assertNotIn("original", response)  # No debe mostrar el contenido original
+
+    def test_show_without_extracted_text(self):
+        """Prueba que 'ver' muestra un aviso si no hay texto extraído."""
+        self.mock_db_manager.get_knowledge_version_by_id.return_value = {
+            'id': 1, 'current_status': 'PENDING', 'final_url': 'url',
+            'retrieval_date': 'date', 'mime_type': 'application/pdf', 'content_hash': 'hash',
+            'extracted_text': None, 'original_content': b'pdf content'
+        }
+        response = self.admin_service.process_command("/admin ver 1", "admin1")
+        self.assertIn("Sin texto limpio disponible. No validar.", response)
 
     def test_validate_flow_with_confirmation_and_whitespace(self):
         """Prueba el flujo de validación, conservando espacios en los argumentos."""
