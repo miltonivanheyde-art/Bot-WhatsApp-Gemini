@@ -52,6 +52,38 @@ class KnowledgeService:
         self.db_path = db_path
         self.db_manager = DatabaseManager(db_path)
 
+    def _find_relevant_snippet(self, query_text: str, full_text: str) -> Optional[str]:
+        """
+        Encuentra el párrafo más relevante del texto completo basado en la consulta.
+        Devuelve un fragmento de hasta 900 caracteres.
+        """
+        MAX_SNIPPET_LENGTH = 900
+
+        query_words = {word.lower() for word in query_text.split() if len(word) > 2}
+        if not query_words:
+            return None
+
+        paragraphs = [p.strip() for p in full_text.split('\n') if p.strip()]
+
+        best_paragraph = ""
+        max_score = 0
+
+        for p in paragraphs:
+            p_lower = p.lower()
+            score = sum(1 for word in query_words if word in p_lower)
+            if score > max_score:
+                max_score = score
+                best_paragraph = p
+
+        # Si no hay ninguna coincidencia de palabras, no se considera relevante.
+        if max_score == 0:
+            return None
+
+        if len(best_paragraph) > MAX_SNIPPET_LENGTH:
+            return best_paragraph[:MAX_SNIPPET_LENGTH - 3] + "..."
+
+        return best_paragraph
+
     def _extract_and_clean_text(self, content: RetrievedContent) -> Optional[str]:
         """Extrae y limpia el texto del contenido recuperado, aplicando políticas de calidad."""
         MAX_TEXT_LENGTH = 20000
@@ -98,17 +130,22 @@ class KnowledgeService:
 
     def _search_local_validated(self, query_text: str) -> Optional[ValidatedKnowledge]:
         """
-        Busca conocimiento validado en la base de datos local usando la API pública.
+        Busca conocimiento validado y devuelve un fragmento relevante.
         """
         try:
             self.db_manager.connect()
             result = self.db_manager.search_validated_knowledge(query_text)
-            if result:
-                return ValidatedKnowledge(
-                    title=result["title"],
-                    content=result["extracted_text"],
-                    source_url=result["final_url"]
-                )
+            if result and result.get("extracted_text"):
+                full_text = result["extracted_text"]
+                snippet = self._find_relevant_snippet(query_text, full_text)
+
+                if snippet:
+                    return ValidatedKnowledge(
+                        title=result["title"],
+                        content=snippet,
+                        source_url=result["final_url"]
+                    )
+            # Si no hay resultado en la DB, no hay texto extraído, o no hay snippet relevante, se devuelve None
             return None
         finally:
             self.db_manager.close()

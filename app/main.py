@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 
 from app.gemini_service import generar_respuesta_gemini
 from app.knowledge_service import KnowledgeService, KnowledgeStatus, ValidatedKnowledge
+from app.database import DatabaseManager
+from app.knowledge_admin_service import KnowledgeAdminService
 
 load_dotenv(dotenv_path="bot.env")
 
@@ -15,6 +17,8 @@ load_dotenv(dotenv_path="bot.env")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
+KNOWLEDGE_ADMIN_NUMBERS_STR = os.getenv("KNOWLEDGE_ADMIN_NUMBERS", "")
+KNOWLEDGE_ADMIN_NUMBERS = {num.strip() for num in KNOWLEDGE_ADMIN_NUMBERS_STR.split(',') if num.strip()}
 
 DEBUG_WEBHOOK = False
 
@@ -22,6 +26,10 @@ app = FastAPI()
 
 # Crear una única instancia del servicio de conocimiento
 knowledge_service = KnowledgeService(db_path="data/tita.db")
+
+# Crear instancias para el servicio administrativo
+admin_db = DatabaseManager("data/tita.db")
+knowledge_admin_service = KnowledgeAdminService(db_manager=admin_db)
 
 # Almacenamiento en memoria para el estado de la conversación.
 CONVERSATION_STATE = {}
@@ -109,6 +117,16 @@ def _process_text_message(message_info: dict):
     print(f"👤 {numero_remitente}")
     print(f"💬 {texto_recibido}")
     print("═══════════════════════════════════════\n")
+
+    # --- FASE DE ADMINISTRACIÓN ---
+    if texto_recibido.strip().lower().startswith("/admin"):
+        if numero_remitente not in KNOWLEDGE_ADMIN_NUMBERS:
+            return  # Ignorar silenciosamente si no es un administrador
+
+        admin_response = knowledge_admin_service.process_command(texto_recibido, numero_remitente)
+        enviar_mensaje_whatsapp(admin_response, numero_remitente)
+        print(f"⚙️ Comando administrativo ejecutado por {numero_remitente}.")
+        return  # Finaliza el procesamiento
 
     # --- FASE F: INTEGRACIÓN MÍNIMA DE KNOWLEDGE SERVICE ---
     try:

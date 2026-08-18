@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 from google import genai
 
@@ -69,12 +69,14 @@ def generar_respuesta_gemini(
 
         # La ID de interacción previa se utiliza para mantener la memoria, pero no se registra para mantener la consola limpia.
 
-        # Inyección dinámica de la fecha actual en el prompt del sistema.
+        # Inyección dinámica de la fecha y hora de Argentina en el prompt del sistema.
         final_system_instruction = BASE_SYSTEM_INSTRUCTION
         if final_system_instruction:
-            today_str = datetime.now().strftime("%Y-%m-%d")
+            tz_ar = timezone(timedelta(hours=-3))
+            now_ar = datetime.now(tz_ar)
+            datetime_ar_str = now_ar.strftime("%Y-%m-%d %H:%M:%S")
             final_system_instruction = final_system_instruction.replace(
-                "{current_date}", today_str
+                "{current_datetime_ar}", datetime_ar_str
             )
 
         # Llamada final y correcta a la API de Gemini.

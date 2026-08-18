@@ -21,25 +21,27 @@ class TestKnowledgeService(unittest.TestCase):
         self.service.db_manager = self.mock_db_manager
 
     def test_returns_validated_knowledge_when_found(self):
-        """1. Devuelve VALIDATED_KNOWLEDGE cuando la base de datos encuentra contenido."""
+        """1. Devuelve un fragmento de VALIDATED_KNOWLEDGE cuando hay coincidencia."""
         # Configurar el mock para que devuelva un resultado de búsqueda
+        full_text = "Este es un parrafo sobre otros temas.\n\nEl Programa de Atencion Medica Integral (PAMI) es la obra social de los jubilados y pensionados.\n\nEste es un parrafo final."
         mock_search_result = {
-            "title": "Test Title",
-            "extracted_text": "This is validated content.",
-            "final_url": "https://www.anses.gob.ar/validated"
+            "title": "Info PAMI",
+            "extracted_text": full_text,
+            "final_url": "https://www.anses.gob.ar/pami"
         }
         self.mock_db_manager.search_validated_knowledge.return_value = mock_search_result
 
         # Ejecutar el servicio
-        response = self.service.handle_query("test query")
+        response = self.service.handle_query("atencion pami")
 
         # Verificar el resultado
         self.assertEqual(response.status, KnowledgeStatus.VALIDATED_KNOWLEDGE)
         self.assertIsInstance(response.data, ValidatedKnowledge)
         assert response.data is not None
-        self.assertEqual(response.data.title, "Test Title")
-        self.assertEqual(response.data.content, "This is validated content.")
-        self.mock_db_manager.search_validated_knowledge.assert_called_once_with("test query")
+        self.assertEqual(response.data.content, "El Programa de Atencion Medica Integral (PAMI) es la obra social de los jubilados y pensionados.")
+        self.assertNotEqual(response.data.content, full_text)
+        self.assertEqual(response.data.source_url, "https://www.anses.gob.ar/pami")
+        self.mock_db_manager.search_validated_knowledge.assert_called_once_with("atencion pami")
 
     @patch('app.knowledge_service.retrieve_source_content')
     def test_retrieves_and_stores_pending_notice(self, mock_retrieve_source_content):
@@ -240,6 +242,41 @@ class TestKnowledgeService(unittest.TestCase):
         self.mock_db_manager.insert_knowledge_version.assert_called_once()
         call_args = self.mock_db_manager.insert_knowledge_version.call_args[1]
         self.assertIsNone(call_args['extracted_text'])
+
+    def test_snippet_is_truncated_if_too_long(self):
+        """Prueba que el fragmento se recorta si supera los 900 caracteres."""
+        long_paragraph = "Este es un párrafo extremadamente largo sobre un tema específico. " * 50  # > 900 chars
+        full_text = f"Parrafo inicial.\n\n{long_paragraph}\n\nParrafo final."
+        mock_search_result = {
+            "title": "Largo",
+            "extracted_text": full_text,
+            "final_url": "https://www.anses.gob.ar/largo"
+        }
+        self.mock_db_manager.search_validated_knowledge.return_value = mock_search_result
+
+        response = self.service.handle_query("tema específico")
+
+        self.assertEqual(response.status, KnowledgeStatus.VALIDATED_KNOWLEDGE)
+        self.assertIsInstance(response.data, ValidatedKnowledge)
+        assert response.data is not None
+        self.assertEqual(len(response.data.content), 900)
+        self.assertTrue(response.data.content.endswith("..."))
+
+    def test_returns_not_found_if_no_relevant_snippet(self):
+        """Prueba que devuelve NOT_FOUND si la consulta no coincide con el contenido."""
+        full_text = "Este texto solo habla de jubilaciones y pensiones."
+        mock_search_result = {
+            "title": "Jubilaciones",
+            "extracted_text": full_text,
+            "final_url": "https://www.anses.gob.ar/jubilaciones"
+        }
+        self.mock_db_manager.search_validated_knowledge.return_value = mock_search_result
+
+        # La consulta es sobre un tema no presente en el texto
+        response = self.service.handle_query("asignacion universal")
+
+        self.assertEqual(response.status, KnowledgeStatus.NOT_FOUND)
+
 
 if __name__ == '__main__':
     unittest.main()
