@@ -41,5 +41,20 @@
         "filename": "PS-2.68-Escolaridad.pdf",
         "mime_type": "application/pdf",
         "status": "ACTIVE"
+    },
+    "ps_2_94": {
+        "title": "Formulario PS 2.94 Nacimiento / Adopción / Matrimonio",
+        "aliases": [
+            "ps 2.94",
+            "ps2.94",
+            "nacimiento",
+            "adopcion",
+            "matrimonio",
+            "formulario nacimiento"
+        ],
+        "url": "https://www.anses.gob.ar/sites/default/files/formulario/2026-07/PS-2.94-nac-adop-mat.pdf",
+        "filename": "PS-2.94-Nacimiento-Adopcion-Matrimonio.pdf",
+        "mime_type": "application/pdf",
+        "status": "ACTIVE"
     }
 }

@@ -1,6 +1,6 @@
 # IA_CANON.md - Arquitectura de IA
 
-**Versión: 1.2 (ACTUALIZADO)**
+**Versión: 1.3 (ACTUALIZADO)**
 
 ## 🎯 Propósito
 
@@ -56,10 +56,18 @@ Esta sección describe las capacidades que han sido probadas y confirmadas como 
 
 ### Contexto Temporal Dinámico
 
-- **Mecanismo:** Sustitución dinámica de `{current_date}`.
+- **Mecanismo:** Sustitución dinámica de `{current_datetime_ar}`.
 - **Estado:** ✅ **Integrado.**
 - **Resultado:** ✅ **Fecha actual inyectada en cada interacción.**
 - **Evidencia:** Validado mediante ejecución real y logs operativos.
+
+### Calendario de Pagos Dinámico
+
+- **Mecanismo:** `AnsesCalendarService` mantiene separados `mes_actual` y `mes_siguiente`.
+- **Actualización:** Desde el día 20 de cada mes se comprueba como máximo una vez por día si existe el calendario siguiente.
+- **Fuentes:** Se consulta primero ANSES; si responde `403`, se utiliza una fuente pública alternativa con datos estructurados.
+- **Estado:** ✅ Integrado en `app/gemini_service.py` mediante el bloque `[INICIO CALENDARIOS DE PAGOS]`.
+- **Validación:** Se comprobó la separación real de agosto y septiembre, la migración del caché anterior y la regla de una comprobación diaria.
 
 ### Tool Calling
 
@@ -126,6 +134,7 @@ Los siguientes formatos han sido probados y confirmados como aceptados por la AP
 - ✅ Prompt Dinámico
 - ✅ Contexto Temporal Dinámico
 - ✅ Persistencia de Estado
+- ✅ Calendario de pagos actual y siguiente
 
 ### Capacidades Validadas Pendientes de Integración
 

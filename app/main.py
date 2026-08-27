@@ -8,8 +8,6 @@ from dotenv import load_dotenv
 
 from app.gemini_service import generar_respuesta_gemini
 from app.knowledge_service import KnowledgeService, KnowledgeStatus, ValidatedKnowledge
-from app.database import DatabaseManager
-from app.knowledge_admin_service import KnowledgeAdminService
 
 load_dotenv(dotenv_path="bot.env")
 
@@ -17,8 +15,6 @@ load_dotenv(dotenv_path="bot.env")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
-KNOWLEDGE_ADMIN_NUMBERS_STR = os.getenv("KNOWLEDGE_ADMIN_NUMBERS", "")
-KNOWLEDGE_ADMIN_NUMBERS = {num.strip() for num in KNOWLEDGE_ADMIN_NUMBERS_STR.split(',') if num.strip()}
 
 DEBUG_WEBHOOK = False
 
@@ -26,10 +22,6 @@ app = FastAPI()
 
 # Crear una única instancia del servicio de conocimiento
 knowledge_service = KnowledgeService(db_path="data/tita.db")
-
-# Crear instancias para el servicio administrativo
-admin_db = DatabaseManager("data/tita.db")
-knowledge_admin_service = KnowledgeAdminService(db_manager=admin_db)
 
 # Almacenamiento en memoria para el estado de la conversación.
 CONVERSATION_STATE = {}
@@ -69,8 +61,8 @@ def _enviar_mensaje(payload: dict):
         "Authorization": f"Bearer {WHATSAPP_TOKEN}",
         "Content-Type": "application/json",
     }
-    # La versión de la API se actualiza a v25.0 según el ejemplo curl proporcionado.
-    url = f"https://graph.facebook.com/v25.0/{PHONE_NUMBER_ID}/messages"
+    # Usar una versión reciente y estable de la API de Graph (ej. v20.0).
+    url = f"https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages"
     
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
@@ -104,6 +96,43 @@ def enviar_mensaje_template(nombre_template: str, codigo_lenguaje: str, numero: 
     }
     _enviar_mensaje(payload)
 
+def _get_gemini_response_and_reply(prompt: str, sender_id: str, user_state: dict):
+    """
+    Orchestrates getting a response from Gemini and handling the reply,
+    including state management for conversation ID and user name.
+    """
+    previous_interaction_id = user_state.get("interaction_id")
+    user_name = user_state.get("name")
+
+    texto_respuesta, new_interaction_id = generar_respuesta_gemini(
+        prompt=prompt,
+        previous_interaction_id=previous_interaction_id,
+        user_name=user_name
+    )
+
+    # Lógica para detectar y guardar el nombre del usuario si Gemini lo indica
+    NAME_TAG_PREFIX = "[SAVE_NAME:"
+    if texto_respuesta and texto_respuesta.startswith(NAME_TAG_PREFIX):
+        end_tag_index = texto_respuesta.find("]")
+        if end_tag_index != -1:
+            # Extraer el nombre de la etiqueta
+            newly_detected_name = texto_respuesta[len(NAME_TAG_PREFIX):end_tag_index].strip()
+            # Actualizar el nombre en el estado del usuario
+            user_state["name"] = newly_detected_name
+            # Limpiar la respuesta para que la etiqueta no sea visible para el usuario
+            texto_respuesta = texto_respuesta[end_tag_index + 1:].lstrip()
+
+    # Actualizar el estado de la conversación
+    if new_interaction_id:
+        user_state["interaction_id"] = new_interaction_id
+    elif "interaction_id" in user_state:
+        del user_state["interaction_id"]
+
+    CONVERSATION_STATE[sender_id] = user_state
+    _save_state()
+
+    enviar_mensaje_whatsapp(texto_respuesta, sender_id)
+
 def _process_text_message(message_info: dict):
     """Procesa un evento de mensaje de tipo 'text'."""
     numero_remitente = message_info.get("from")
@@ -118,15 +147,14 @@ def _process_text_message(message_info: dict):
     print(f"💬 {texto_recibido}")
     print("═══════════════════════════════════════\n")
 
-    # --- FASE DE ADMINISTRACIÓN ---
-    if texto_recibido.strip().lower().startswith("/admin"):
-        if numero_remitente not in KNOWLEDGE_ADMIN_NUMBERS:
-            return  # Ignorar silenciosamente si no es un administrador
+    user_state = CONVERSATION_STATE.get(numero_remitente, {})
+    if isinstance(user_state, str):
+        print(f"🔧 Migrando estado antiguo para el usuario {numero_remitente}.")
+        user_state = {"interaction_id": user_state, "name": None}
+        CONVERSATION_STATE[numero_remitente] = user_state
 
-        admin_response = knowledge_admin_service.process_command(texto_recibido, numero_remitente)
-        enviar_mensaje_whatsapp(admin_response, numero_remitente)
-        print(f"⚙️ Comando administrativo ejecutado por {numero_remitente}.")
-        return  # Finaliza el procesamiento
+    # Obtener el estado completo del usuario (o un diccionario vacío si es nuevo).
+    user_state = CONVERSATION_STATE.get(numero_remitente, user_state)
 
     # --- FASE F: INTEGRACIÓN MÍNIMA DE KNOWLEDGE SERVICE ---
     try:
@@ -149,21 +177,8 @@ def _process_text_message(message_info: dict):
         print(f"⚠️ ADVERTENCIA: KnowledgeService falló: {e}. Continuando con Gemini.")
     # --- FIN DE LA INTEGRACIÓN ---
 
-    previous_interaction_id = CONVERSATION_STATE.get(numero_remitente)
-
-    texto_respuesta, new_interaction_id = generar_respuesta_gemini(
-        prompt=texto_recibido,
-        previous_interaction_id=previous_interaction_id
-    )
-
-    if new_interaction_id:
-        CONVERSATION_STATE[numero_remitente] = new_interaction_id
-        _save_state()
-    elif numero_remitente in CONVERSATION_STATE:
-        del CONVERSATION_STATE[numero_remitente]
-        _save_state()
-
-    enviar_mensaje_whatsapp(texto_respuesta, numero_remitente)
+    # 4. If no local knowledge was found, fallback to Gemini.
+    _get_gemini_response_and_reply(texto_recibido, numero_remitente, user_state)
 
 @app.get("/")
 def inicio():
@@ -196,34 +211,31 @@ async def recibir_mensajes(request: Request):
     try:
         body = json.loads(body_bytes)
 
-        if "entry" not in body or not body["entry"]:
-            print("📡 EVENTO WHATSAPP\nTipo: Payload inválido (sin 'entry').\n")
+        if body.get("object") != "whatsapp_business_account":
+            print("📡 EVENTO WHATSAPP\nTipo: Payload no es de WhatsApp.\n")
             return Response(status_code=status.HTTP_200_OK)
 
-        value = body["entry"][0]["changes"][0].get("value", {})
+        for entry in body.get("entry", []):
+            for change in entry.get("changes", []):
+                value = change.get("value", {})
+                if not value:
+                    continue
 
-        # --- EVENT ROUTER ---
-        if "messages" in value:
-            for message in value["messages"]:
-                message_type = message.get("type", "unknown")
-                if message_type == "text":
-                    _process_text_message(message)
+                # --- EVENT ROUTER ---
+                if "messages" in value:
+                    for message in value.get("messages", []):
+                        if message.get("type") == "text":
+                            _process_text_message(message)
+                        else:
+                            print(f"📡 EVENTO WHATSAPP\nTipo: {message.get('type', 'unknown')}\n")
+
+                elif "statuses" in value:
+                    for status_update in value.get("statuses", []):
+                        status_type = status_update.get("status", "unknown").upper()
+                        log_message = {"SENT": "Enviado ✔️", "DELIVERED": "Entregado ✔️✔️", "READ": "Leído 👀"}.get(status_type, f"Estado: {status_type}")
+                        print(f"📬 {log_message}\n")
                 else:
-                    print(f"📡 EVENTO WHATSAPP\nTipo: {message_type}\n")
-        
-        elif "statuses" in value:
-            STATUS_LOG_FORMAT = {
-                "SENT": "Enviado ✔️",
-                "DELIVERED": "Entregado ✔️✔️",
-                "READ": "Leído 👀"
-            }
-            for status_update in value["statuses"]:
-                status_type = status_update.get("status", "unknown").upper()
-                log_message = STATUS_LOG_FORMAT.get(status_type, f"Estado: {status_type}")
-                print(f"📬 {log_message}\n")
-        
-        else:
-            print(f"📡 EVENTO WHATSAPP\nTipo: Desconocido (claves: {list(value.keys())})\n")
+                    print(f"📡 EVENTO WHATSAPP\nTipo: Desconocido (claves: {list(value.keys())})\n")
 
     except (json.JSONDecodeError, KeyError, IndexError) as e:
         print(f"❌ ERROR DE PARSEO: No se pudo procesar el webhook. {type(e).__name__}: {e}\n", file=sys.stderr)

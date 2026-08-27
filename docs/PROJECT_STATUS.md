@@ -1,8 +1,8 @@
 # INFORME DE ESTADO DEL PROYECTO
 
-**Fecha de la última revisión:** 17 de agosto de 2026
+**Fecha de la última revisión:** 26 de agosto de 2026
 **Análisis realizado por:** Gemini Code Assist
-**Fuente de evidencia:** Análisis del código fuente (`app/main.py`, `app/gemini_service.py`, `app/database.py`, `app/web_retrieval_service.py`), pruebas locales ejecutadas por el usuario (`tests/test_database.py`, `tests/test_web_retrieval.py`) y ejecución real histórica del bot.
+**Fuente de evidencia:** Análisis y pruebas ejecutadas sobre el código actual, incluyendo `app/main.py`, `app/gemini_service.py`, `app/calendar_service.py` y los servicios de conocimiento.
 
 ---
 
@@ -14,7 +14,7 @@ El proyecto es un bot de WhatsApp implementado en Python con el framework FastAP
 
 Este informe actualiza el estado del proyecto, invalidando las conclusiones de informes anteriores que describían un estado de "mantenimiento" o una falta de implementación de la IA. La arquitectura objetivo definida en `IA_CANON.md` para las capacidades básicas de interacción y memoria ha sido alcanzada y está en producción local.
 
-Adicionalmente, se ha iniciado el desarrollo de una Capa de Conocimiento Verificable. Las fases iniciales, que incluyen el acceso SQLite aislado y no integrado (Fase B) y un servicio de recuperación web seguro (Fase C), han sido implementadas y validadas de forma aislada, pero aún no están integradas en el flujo operativo del bot.
+La Capa de Conocimiento Verificable está integrada en el flujo principal como primera consulta, con fallback a Gemini cuando no existe conocimiento validado. El calendario se obtiene dinámicamente y se inyecta separado por mes.
 
 ---
 
@@ -43,9 +43,10 @@ El análisis del código fuente (`app/main.py` y `app/gemini_service.py`) y la e
 - **Túnel de Red:** Ngrok (para exponer el servidor local a internet)
 - **Dependencias Principales (`requirements.txt`):** `fastapi`, `uvicorn`, `python-dotenv`, `requests`, `ngrok`, `google-genai`.
 - **Gestión de Secretos:** El sistema utiliza el paquete `python-dotenv` para cargar variables de entorno (tokens y claves) desde un archivo `bot.env`, que está correctamente excluido del control de versiones mediante `.gitignore`.
-- **Persistencia de Estado:** El sistema utiliza dos mecanismos de persistencia distintos:
+- **Persistencia de Estado:** El sistema utiliza tres mecanismos de persistencia distintos:
   - **`state.json`:** Para la memoria conversacional de Gemini (ID de interacción), integrado y en uso.
   - **`app/database.py` (SQLite):** Para la futura Capa de Conocimiento Verificable. Este componente ha sido implementado y validado de forma aislada (`tests/test_database.py`) y no está integrado en el flujo principal.
+  - **`app/calendar_cache.json`:** Caché local generado del mes actual y el siguiente; está excluido de Git.
 
 ---
 
@@ -95,6 +96,7 @@ La integración de las capacidades fundamentales de Gemini en el flujo productiv
 - ✅ **Memoria Conversacional:** Implementada y persistente a través de `previous_interaction_id` y el almacenamiento en `state.json`.
 - ✅ **Prompt Dinámico:** El prompt de sistema se carga desde `app/gemini_system_prompt.md` y se enriquece con datos dinámicos (fecha actual) antes de cada llamada a la IA.
 - ✅ **Persistencia de Estado:** El estado de la conversación (los `interaction_id` por usuario) se guarda y carga de `state.json`, asegurando que la memoria sobreviva a reinicios del servidor.
+- ✅ **Calendario de pagos:** `AnsesCalendarService` conserva `mes_actual` y `mes_siguiente`, comprueba desde el día 20 una vez por día y usa una fuente alternativa cuando ANSES responde `403`.
 
 ### Capacidades Validadas (Pendientes de Integración en el Flujo Principal)
 
@@ -111,13 +113,13 @@ La integración de las capacidades fundamentales de Gemini en el flujo productiv
 ## 6. Estado Git Observable
 
 - **Configuración (`.gitignore`):** El archivo está correctamente configurado para excluir del repositorio el entorno virtual, la caché de Python y, crucialmente, los archivos de secretos (`bot.env`, `.env`) y de estado (`state.json`).
-- **Ramas y Commits:** El desarrollo se gestiona en ramas de funcionalidad. La integración inicial de Gemini se completó en `feature/integracion-gemini`. El desarrollo de la Capa de Conocimiento se está realizando en la rama `feature/knowledge-web-retrieval`.
+- **Ramas y Commits:** La rama actual comprobada es `feature/knowledge-service`. Los cambios de esta fase se preparan para commit selectivo; no se modificó `main`.
 
 ---
 
 ## 7. Riesgos Actuales
 
-1. **Discrepancia Documental:** Aunque este informe busca corregirla, la documentación histórica (`PROJECT_STATUS.md` e `IA_CANON.md` en sus versiones anteriores) contenía información obsoleta que podría generar confusión si no se actualiza formalmente.
+1. **Disponibilidad de ANSES:** La fuente oficial responde `403` desde el entorno de ejecución; existe una fuente alternativa pública para mantener la actualización automática.
 2. **Rollback disponible:** El tag verificado `knowledge-layer-phase-b` proporciona un punto de restauración para la capa de conocimiento.
 3. **Escalabilidad de Persistencia:** La persistencia actual mediante `state.json` es adecuada para el estado operativo actual del proyecto. Requerimientos futuros de escalabilidad deberán evaluarse cuando exista evidencia concreta que lo justifique.
 

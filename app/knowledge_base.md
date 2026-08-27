@@ -1,71 +1,100 @@
 # Base de Conocimiento Institucional de Tita (ANSES Fuerte Esperanza)
 
-Esta base contiene información estable y verificada sobre ANSES, diseñada para contextualizar las respuestas de Tita.
+**Organismo:** ANSES
+
+Esta base de conocimiento organiza las prestaciones y trámites por categorías para facilitar su consulta y mantenimiento.
 
 ---
 
-## 1. Identidad y Contacto Institucional
+## Embarazo y nacimiento
 
-*   **Nombre de la asistente:** Tita.
-*   **Institución:** Administración Nacional de la Seguridad Social (ANSES).
-*   **Oficina de referencia:** ANSES Fuerte Esperanza, Chaco.
-*   **Responsable de la oficina:** Milton Ivan Heyde.
-*   **Horario de atención:** Lunes a viernes, de 6:30 a 12:30.
+Acompañamiento a personas gestantes durante el embarazo y nacimiento de sus hijos.
 
----
-
-## 2. Información General sobre Prestaciones y Trámites
-
-### Asignación Universal por Hijo (AUH)
-La Asignación Universal por Hijo es una prestación mensual que se paga por cada hijo o hija menor de 18 años o sin límite de edad en caso de discapacidad. Está destinada a madres, padres o titulares que se encuentren desocupados, sean trabajadores no registrados, del servicio doméstico o monotributistas sociales. Para acceder, es fundamental cumplir con los requisitos de salud y educación de los niños.
-
-### Asignaciones Familiares (SUAF)
-Las Asignaciones Familiares son un conjunto de prestaciones que se otorgan a trabajadores en relación de dependencia, monotributistas, titulares de la Prestación por Desempleo, entre otros, por sus hijos. Incluyen asignaciones por hijo, por prenatal, por nacimiento, por adopción, por matrimonio, por escolaridad y por ayuda escolar anual.
-
-### Asignación por Embarazo para Protección Social
-Es una prestación mensual para embarazadas de 12 semanas o más, que se encuentren desocupadas, sean trabajadoras no registradas, del servicio doméstico o monotributistas sociales. Su objetivo es asegurar un ingreso durante el embarazo y fomentar el control de salud.
-
-### Libreta AUH (Formulario PS 1.47)
-La Libreta AUH es un documento que acredita el cumplimiento de los controles de salud, vacunación y educación de los niños y adolescentes. Su presentación anual es obligatoria para garantizar el cobro del 20% retenido de la Asignación Universal por Hijo.
-
-### Ayuda Escolar Anual
-Es un monto que se paga una vez al año por cada hijo en edad escolar (desde los 4 hasta los 17 años inclusive) o sin límite de edad si tiene discapacidad y asiste a un establecimiento educativo. Se abona a quienes cobran Asignación Familiar o Asignación Universal por Hijo.
-
-### Jubilaciones
-Las jubilaciones son prestaciones que garantizan un ingreso a las personas que alcanzan una determinada edad y han cumplido con los años de aportes requeridos por ley. Existen diferentes tipos de jubilaciones según la actividad laboral y las condiciones de cada persona.
-
-### Pensiones
-Las pensiones son prestaciones económicas que se otorgan a personas que no cumplen con los requisitos para una jubilación, pero se encuentran en situaciones de vulnerabilidad o son familiares de un causante fallecido. Incluyen pensiones no contributivas por invalidez, por madre de 7 hijos, y pensiones por fallecimiento.
-
-### Turnos
-Para muchos trámites en ANSES es necesario solicitar un turno previamente. Los turnos se pueden gestionar a través de la página web oficial o por teléfono. Es importante asistir con la documentación requerida el día y hora asignados.
-
-### CUIL (Código Único de Identificación Laboral)
-El CUIL es un número personal e intransferible que identifica a cada trabajador y a cada persona que percibe una prestación de la seguridad social en Argentina. Es necesario para realizar trámites laborales, previsionales y de seguridad social.
-
-### Certificación Negativa
-La Certificación Negativa es un comprobante que emite ANSES y que acredita que una persona no registra aportes o beneficios previsionales, ni prestaciones de desempleo, entre otros. Es un documento útil para diversos trámites.
-
-### Clave de la Seguridad Social
-Es una contraseña personal que permite realizar trámites y consultas de forma segura en la web de ANSES, sin necesidad de ir a una oficina. Es fundamental mantenerla segura y no compartirla.
-
-### Prestación por Desempleo
-Es un seguro que se otorga a trabajadores en relación de dependencia que fueron despedidos sin justa causa, por finalización de contrato o por fuerza mayor. Provee un ingreso mensual y cobertura de salud durante un período determinado.
-
-### Apoderados
-Un apoderado es una persona designada para realizar trámites o cobrar prestaciones en nombre de otra. Es un recurso útil para quienes no pueden gestionar sus asuntos personalmente. La designación se realiza mediante un formulario específico.
-
-### Historia Laboral
-La Historia Laboral es un registro de todos los aportes previsionales realizados por un trabajador a lo largo de su vida activa. Es un documento clave para verificar los años de servicio y calcular futuras jubilaciones o pensiones.
-
-### Atención en la Oficina
-La atención en las oficinas de ANSES se realiza con turno previo para la mayoría de los trámites. Es importante verificar la documentación necesaria antes de asistir. El personal está capacitado para orientar y asistir en las gestiones.
-
-### Formularios Oficiales
-ANSES utiliza diversos formularios para la gestión de trámites y prestaciones. Estos formularios son de carácter oficial y deben ser completados con precisión. Se recomienda descargarlos siempre desde la página web oficial de ANSES para asegurar que se utiliza la versión más actualizada.
+- **Asignación por Embarazo para Protección Social:** https://www.anses.gob.ar/embarazo-y-nacimiento/asignacion-por-embarazo-para-proteccion-social
+  - **A quién le corresponde:** Personas desocupadas, trabajadoras informales, monotributistas sociales y trabajadoras de casas particulares registradas.
+  - **Requisitos:** Tener un embarazo de 12 semanas o más, ser argentina/naturalizada con DNI (o extranjera con 3 años de residencia), y no tener obra social (para desocupadas/informales).
+  - **Trámite:** Acreditar datos en miANSES, inscribirse en el Programa SUMAR si corresponde, y presentar el formulario PS 2.10.
+- **Asignación por Prenatal:** https://www.anses.gob.ar/embarazo-y-nacimiento/asignacion-por-prenatal
+- **Asignación por Maternidad / Maternidad Down:** https://www.anses.gob.ar/embarazo-y-nacimiento/asignacion-por-maternidad
+- **Asignación por Nacimiento y Adopción:** https://www.anses.gob.ar/embarazo-y-nacimiento/asignacion-por-nacimiento-y-adopcion
+  - **Descripción:** Es un pago único que le corresponde a uno de los progenitores por el nacimiento o adopción de un hijo.
+  - **Requisitos:** Contar con la información del titular y su grupo familiar registrada en ANSES, tener ingresos familiares dentro de los topes vigentes y cumplir con la antigüedad laboral mínima de 6 meses.
+  - **Trámite:** Se realiza de forma presencial en una oficina de ANSES con turno previo, presentando DNI, partida de nacimiento o sentencia de adopción, y el formulario PS 2.94.
+- **Plan 1000 días:** https://www.anses.gob.ar/embarazo-y-nacimiento/plan-1000-dias
 
 ---
 
-## 3. Información Variable y Verificación Oficial
+## Hijos
 
-**Importante:** La información sobre calendarios de pago, fechas de cobro, montos, valores económicos, programas vigentes, normativas recientes y requisitos que puedan cambiar **no se incluye en esta base de conocimiento** debido a su naturaleza variable. Para estos datos, es **IMPRESCINDIBLE** consultar siempre la página web oficial de ANSES o sus canales de atención directa para obtener la información más actualizada y precisa. Tita no puede verificar esta información en tiempo real sin una herramienta de búsqueda oficial.
+Asignaciones y protecciones para niños, niñas y adolescentes.
+
+- **Asignación Universal por Hijo (AUH):** https://www.anses.gob.ar/hijos/asignacion-universal-por-hijo
+  - **A quién le corresponde:** Personas desocupadas, trabajadoras/es no registrados, trabajadoras/es del servicio doméstico y monotributistas sociales.
+  - **Requisitos:** Ser argentino/a o residente con al menos 2 años de antigüedad. Los hijos deben ser menores de 18 años y solteros.
+  - **Obligaciones:** Es fundamental presentar anualmente la Libreta AUH para acreditar los controles de salud, vacunación y educación.
+- **Asignación Familiar por Hijo (SUAF):** https://www.anses.gob.ar/hijos/asignacion-familiar-por-hijo
+  - **Descripción:** Es el sistema a través del cual ANSES paga las asignaciones a trabajadores en relación de dependencia, monotributistas, jubilados y pensionados, entre otros.
+- **Prestación Alimentar:** https://www.anses.gob.ar/hijos/prestacion-alimentar
+- **Régimen de reparación económica para niñas, niños y adolescentes (Ley 27.452):** https://www.anses.gob.ar/hijos/regimen-de-reparacion-economica-para-las-ninas-ninos-y-adolescentes-ley-27452
+- **Solicitud de cobro de asignaciones por hijo a cargo:** https://www.anses.gob.ar/hijos/solicitud-de-cobro-de-asignaciones-por-hijo-cargo
+- **Autorización para cobro por Hijo con Discapacidad:** https://www.anses.gob.ar/hijos/autorizacion-para-el-cobro-de-asignaciones-por-hijo-con-discapacidad
+- **Prestación Mensual Oncopediatría:** https://www.anses.gob.ar/hijos/prestacion-mensual-oncopediatria
+- **Medio de cobro único para asignaciones y programas:** https://www.anses.gob.ar/hijos/medio-de-cobro-unico-para-asignaciones-y-programas
+
+---
+
+## Educación
+
+Apoyos económicos y becas para la escolaridad y formación.
+
+- **Ayuda Escolar Anual:** https://www.anses.gob.ar/educacion/ayuda-escolar-anual
+- **Becas Progresar:** https://www.anses.gob.ar/educacion/progresar
+  - **Descripción:** Son becas para que los jóvenes puedan terminar sus estudios primarios o secundarios, y continuar en la educación superior o formarse profesionalmente.
+- **Vouchers Educativos:** https://www.anses.gob.ar/educacion/vouchers-educativos
+
+---
+
+## Trabajo
+
+Programas y asignaciones para trabajadores activos, independientes y desempleados.
+
+- **Monotributo Social:** https://www.anses.gob.ar/trabajo/monotributo-social
+- **Prestación por Desempleo:** https://www.anses.gob.ar/trabajo/desempleo
+  - **Descripción:** Es un seguro que se otorga a trabajadores en relación de dependencia despedidos sin justa causa. Provee un ingreso mensual y cobertura de salud durante un período determinado.
+- **Asignación por Licencia Mensual Oncopediatría:** https://www.anses.gob.ar/asignacion-por-licencia-mensual-oncopediatria
+- **ANSES va a tu trabajo:** https://www.anses.gob.ar/anses-va-tu-trabajo-0
+- **Créditos ANSES:** https://www.anses.gob.ar/trabajo/creditos-anses
+
+---
+
+## Matrimonio
+
+Asignaciones para cónyuges y matrimonios.
+
+- **Asignación Familiar por Matrimonio:** https://www.anses.gob.ar/matrimonio/asignacion-familiar-por-matrimonio
+- **Asignación Familiar por Cónyuge:** https://www.anses.gob.ar/matrimonio/asignacion-familiar-por-conyuge
+
+---
+
+## Jubilaciones y Pensiones
+
+Trámites previsionales, haberes y moratorias.
+
+- **Cómo iniciar mi jubilación:** https://www.anses.gob.ar/jubilaciones-y-pensiones/como-iniciar-mi-jubilacion
+- **Cómo obtener mi pensión:** https://www.anses.gob.ar/jubilaciones-y-pensiones/como-obtener-mi-pension
+  - **Descripción:** Las pensiones son prestaciones para personas en situaciones de vulnerabilidad que no cumplen los requisitos para una jubilación, o para familiares de un causante fallecido.
+- **Reconocimiento de aportes por tareas de cuidado:** https://www.anses.gob.ar/jubilaciones-y-pensiones/reconocimiento-de-aportes-por-tareas-de-cuidado
+- **Plan de Pago de Deuda Previsional:** https://www.anses.gob.ar/jubilaciones-y-pensiones/plan-de-pago-de-deuda-previsional
+- **Cobros y haberes:** https://www.anses.gob.ar/jubilaciones-y-pensiones/cobros-y-haberes
+- **Regímenes jubilatorios especiales y para personas con discapacidad / VIH:** https://www.anses.gob.ar/jubilaciones-y-pensiones/regimenes-jubilatorios
+
+---
+
+## Viudez y fallecimiento
+
+Subsidios y haberes para familiares ante el fallecimiento de un titular.
+
+- **Subsidio de contención familiar:** https://www.anses.gob.ar/viudez-y-fallecimiento/subsidio-de-contencion-familiar
+- **Haberes pendientes de cobro:** https://www.anses.gob.ar/viudez-y-fallecimiento/haberes-pendientes-de-cobro
+- **Pensión por fallecimiento de un trabajador o jubilado:** https://www.anses.gob.ar/viudez-y-fallecimiento/como-obtener-una-pension-por-fallecimiento
+- **Fallecimiento de beneficiario de PNC:** https://www.anses.gob.ar/viudez-y-fallecimiento/fallecimiento-de-beneficiario-de-pension-no-contributiva
